@@ -1,0 +1,10 @@
+.u-breadcrumb {
+    line-height: 22px;
+    font-size: 15px;
+    color: #666
+}
+
+.u-breadcrumb span,
+.u-breadcrumb a {
+    padding-right: 5px
+}

@@ -1,0 +1,12 @@
+<#function formatDate date>
+    <#if (date)?? >
+        <#return (date)?string('yyyy-MM-dd')!''/>
+    </#if>
+    <#return ""/>
+</#function>
+<#function formatDatetime date>
+    <#if (date)?? >
+        <#return (date)?string('yyyy-MM-dd HH:mm:ss')!''/>
+    </#if>
+    <#return ""/>
+</#function>

@@ -1,0 +1,170 @@
+# ====================本服务配置====================
+server:
+  ip: localhost
+  port: 8070
+
+
+spring:
+  application:
+    name: artshowshopper
+  servlet:
+    multipart:
+      maxFileSize: 100MB
+      maxRequestSize: 100MB
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: root
+    password: abc@123
+    url: jdbc:mysql://localhost:3306/cycan?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+  main:
+    allow-bean-definition-overriding: true
+
+    # =======================freemarker======================
+  freemarker:
+    suffix: .html
+    template-loader-path: classpath:/templates
+    static-locations: classpath:/static/**
+    # 是否允许HttpServletRequest属性覆盖(隐藏)控制器生成的同名模型属性。
+    allow-request-override: false
+    # 是否允许HttpSession属性覆盖(隐藏)控制器生成的同名模型属性。
+    allow-session-override: false
+    # 是否启用模板缓存。
+    cache: false
+    # 模板编码。
+    charset: UTF-8
+    # 是否检查模板位置是否存在。
+    check-template-location: true
+    # Content-Type value.
+    content-type: text/html
+    # 是否启用freemarker
+    enabled: true
+    # 设定所有request的属性在merge到模板的时候，是否要都添加到model中.
+    expose-request-attributes: false
+    # 是否在merge模板的时候，将HttpSession属性都添加到model中
+    expose-session-attributes: false
+    # 设定是否以springMacroRequestContext的形式暴露RequestContext给Spring’s macro library使用
+    expose-spring-macro-helpers: true
+    # 是否优先从文件系统加载template，以支持热加载，默认为true
+    prefer-file-system-access: true
+    # 设定FreeMarker keys.
+    settings.template_update_delay: 0
+    settings.default_encoding: UTF-8
+    settings.classic_compatible: true
+    requestContextAttribute : tx
+# =======================quartz======================
+  quartz:
+    # 将任务等保存化到数据库
+    job-store-type: jdbc
+    # 程序结束时会等待quartz相关的内容结束
+    wait-for-jobs-to-complete-on-shutdown: true
+    # QuartzScheduler启动时更新己存在的Job,这样就不用每次修改targetObject后删除qrtz_job_details表对应记录
+    overwrite-existing-jobs: true
+    # 这里居然是个map，搞得智能提示都没有，佛了
+    properties:
+      org:
+        quartz:
+          # scheduler相关
+          scheduler:
+            # scheduler的实例名
+            instanceName: scheduler
+            instanceId: AUTO
+          # 持久化相关
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            # 表示数据库中相关表是QRTZ_开头的
+            tablePrefix: QRTZ_
+            useProperties: false
+          # 线程池相关
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            # 线程数
+            threadCount: 10
+            # 线程优先级
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+
+# =======================basis.druid======================
+basis.druid:
+  # 初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时
+  initialSize: 1
+  # 最小连接池数量
+  minIdle: 1
+  # 最大连接池数量
+  maxActive: 10
+  # 配置获取连接等待超时的时间
+  maxWait: 10000
+  #  配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+  timeBetweenEvictionRunsMillis: 60000
+  #  配置一个连接在池中最小生存的时间，单位是毫秒
+  minEvictableIdleTimeMillis: 300000
+  #  验证连接有效与否的SQL，不同的数据配置不同
+  validationQuery: select 1
+  #  建议配置为true，不影响性能，并且保证安全性。
+  #  申请连接的时候检测，如果空闲时间大于
+  #  timeBetweenEvictionRunsMillis，
+  #  执行validationQuery检测连接是否有效。
+  testWhileIdle: true
+  #  申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+  #  这里建议配置为TRUE，防止取到的连接不可用
+  testOnBorrow: true
+  #  归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+  testOnReturn: false
+  #  是否缓存preparedStatement，也就是PSCache。
+  #  PSCache对支持游标的数据库性能提升巨大，比如说oracle。
+  #  在mysql5.5以下的版本中没有PSCache功能，建议关闭掉。
+  #  作者在5.5版本中使用PSCache，通过监控界面发现PSCache有缓存命中率记录，
+  #  该应该是支持PSCache。
+  #  打开PSCache，并且指定每个连接上PSCache的大小
+  poolPreparedStatements: true
+  maxPoolPreparedStatementPerConnectionSize: 20
+  #  属性类型是字符串，通过别名的方式配置扩展插件，
+  #  常用的插件有：
+  #  监控统计用的filter:stat
+  #  日志用的filter:log4j
+  #  防御sql注入的filter:wall
+  filters: stat
+  # 访问的用户名
+  loginUsername: root
+  # 访问的密码
+  loginPassword: artshow
+
+
+# ====================MybatisPlus====================
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    # 数据库相关配置
+    db-config:
+      #主键类型  AUTO:"数据库ID自增", INPUT:"用户输入ID",ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+      id-type: auto
+      #字段策略 IGNORED:"忽略判断",NOT_NULL:"非 NULL 判断"),NOT_EMPTY:"非空判断"
+      field-strategy: not_empty
+      #驼峰下划线转换
+      table-underline: true
+      #是否开启大写命名，默认不开启
+      #capital-mode: true
+      #逻辑删除配置
+      #logic-delete-value: 1
+      #logic-not-delete-value: 0
+      db-type: mysql
+    #刷新mapper 调试神器
+    refresh: true
+mybatis:
+  mapper-locations: classpath*:mapper/*Mapper.xml
+
+  # ====================/actuator/health/info====================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      showDetails: ALWAYS
+    shutdown:
+      enabled: true
+
+
+

@@ -1,0 +1,29 @@
+<configuration scan="true" scanPeriod="120000" debug="false">
+    <springProperty scope="context" name="app_name" source="spring.application.name"/>
+    <property scope="context" name="app_log_pattern"
+              value="%d{yyyy-MM-dd} %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <jmxConfigurator/>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${app_log_pattern}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+    <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/data/logs/${app_name}/${app_name}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>/data/logs/${app_name}/${app_name}.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <MaxFileSize>50MB</MaxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${app_log_pattern}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+    <logger name="com.newdream.artshowadmin" level="DEBUG"/>
+    <root level="INFO">
+        <appender-ref ref="rollingFile"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
