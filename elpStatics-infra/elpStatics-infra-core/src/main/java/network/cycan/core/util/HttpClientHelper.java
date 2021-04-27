@@ -30,6 +30,7 @@ public class HttpClientHelper {
             HttpEntity entity = response.getEntity();
             result = EntityUtils.toString(entity, "UTF-8");
         } catch (ClientProtocolException e) {
+
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
