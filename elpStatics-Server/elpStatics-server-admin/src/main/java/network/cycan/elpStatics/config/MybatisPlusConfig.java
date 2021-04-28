@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 2021/2/11 13:54
  */
 @Configuration
+@MapperScan(basePackages = {"network.cycan.elpStatics.mapper"})
 public class MybatisPlusConfig {
     /**
      * 分页插件

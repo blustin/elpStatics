@@ -1,6 +1,8 @@
 package network.cycan.elpStatics.service;
 
+import java.util.Date;
+
 public interface IBlockChainService {
 
-      //  String getBlocknoByTime()
+      void saveTodayBlockData(Date dateTime);
 }
