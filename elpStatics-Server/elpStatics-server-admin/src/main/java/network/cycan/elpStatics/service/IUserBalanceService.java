@@ -3,6 +3,8 @@ package network.cycan.elpStatics.service;
 import network.cycan.elpStatics.model.entity.UserBalance;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.math.BigInteger;
+
 /**
  * <p>
  *  服务类
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IUserBalanceService extends IService<UserBalance> {
 
+    Long getMaxBlockNo();
 }

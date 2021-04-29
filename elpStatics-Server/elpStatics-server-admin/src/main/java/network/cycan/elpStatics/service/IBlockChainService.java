@@ -4,5 +4,5 @@ import java.util.Date;
 
 public interface IBlockChainService {
 
-      void saveTodayBlockData(Date dateTime);
+      void saveTodayBlockData(Date dateTime,String chainAddress,String userType);
 }

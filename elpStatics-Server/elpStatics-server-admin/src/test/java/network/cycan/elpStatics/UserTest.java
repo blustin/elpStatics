@@ -1,9 +1,13 @@
 package network.cycan.elpStatics;
 
 import lombok.extern.slf4j.Slf4j;
+import network.cycan.core.util.DateUtils;
 import network.cycan.core.util.UUIDUtils;
+import network.cycan.elpStatics.enums.ChainContractType;
 import network.cycan.elpStatics.model.entity.UserBalance;
+import network.cycan.elpStatics.service.IBlockChainService;
 import network.cycan.elpStatics.service.IUserBalanceService;
+import network.cycan.elpStatics.util.BlockChainUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +23,8 @@ import java.time.LocalDateTime;
 public class UserTest {
     @Autowired
     private IUserBalanceService iUserBalanceService;
-
+    @Autowired
+    private IBlockChainService iBlockChainService;
     @Test
     public void AddUser()
     {
@@ -32,4 +37,11 @@ public class UserTest {
         iUserBalanceService.save(userBalance);
 
     }
+    @Test
+    public  void testBlockChainService()
+    {
+        iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.ELP_CONTRACT_ADDREES, ChainContractType.ELP.getType());
+    }
+
+
 }

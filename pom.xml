@@ -121,7 +121,10 @@
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${springboot.mybatis.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-logging</artifactId>
+            </dependency>
 <!--            &lt;!&ndash; quartz 定时任务 &ndash;&gt;-->
 <!--            <dependency>-->
 <!--                <groupId>org.springframework.boot</groupId>-->

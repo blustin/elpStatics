@@ -1,13 +1,15 @@
 package network.cycan.elpStatics.model.dto;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
 
-public class ChainLogDto {
+public class ChainLogDto implements Serializable {
     //{"status":"1","message":"OK","result":"6868852"}
+    private static final long serialVersionUID = -432908543160176349L;
     private  String status;
     private String  message;
-    private List<ChainLogResultDto> results;
+    private List<ChainLogResultDto> result;
 
     public String getStatus() {
         return status;
@@ -25,12 +27,12 @@ public class ChainLogDto {
         this.message = message;
     }
 
-    public List<ChainLogResultDto> getResults() {
-        return results;
+    public List<ChainLogResultDto> getResult() {
+        return result;
     }
 
-    public void setResults(List<ChainLogResultDto> results) {
-        this.results = results;
+    public void setResult(List<ChainLogResultDto> result) {
+        this.result = result;
     }
 
 

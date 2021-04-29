@@ -1,12 +1,13 @@
 package network.cycan.elpStatics.model.dto;
 
-import java.math.BigInteger;
+import java.io.Serializable;
+import java.util.List;
 
-public class ChainResultDto {
-    //{"status":"1","message":"OK","result":"6868852"}
+public class UserChainBalanceResultDto implements Serializable {
+
     private  String status;
     private String  message;
-    private String result;
+    private List<UserChainBalanceDto> result;
 
     public String getStatus() {
         return status;
@@ -24,13 +25,11 @@ public class ChainResultDto {
         this.message = message;
     }
 
-    public String getResult() {
+    public List<UserChainBalanceDto> getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(List<UserChainBalanceDto> result) {
         this.result = result;
     }
-
-
 }
