@@ -125,12 +125,12 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-logging</artifactId>
             </dependency>
-<!--            &lt;!&ndash; quartz 定时任务 &ndash;&gt;-->
-<!--            <dependency>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-starter-quartz</artifactId>-->
-<!--                <version>2.2.6.RELEASE</version>-->
-<!--            </dependency>-->
+            <!-- quartz -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-quartz</artifactId>
+                <version>2.2.6.RELEASE</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
