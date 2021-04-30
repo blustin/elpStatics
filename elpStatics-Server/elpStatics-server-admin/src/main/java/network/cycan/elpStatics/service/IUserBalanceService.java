@@ -15,5 +15,5 @@ import java.math.BigInteger;
  */
 public interface IUserBalanceService extends IService<UserBalance> {
 
-    Long getMaxBlockNo();
+    Long getMaxBlockNo(String userType);
 }

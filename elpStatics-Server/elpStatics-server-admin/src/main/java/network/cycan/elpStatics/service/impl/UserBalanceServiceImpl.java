@@ -22,8 +22,9 @@ import java.math.BigInteger;
 public class UserBalanceServiceImpl extends ServiceImpl<UserBalanceMapper, UserBalance> implements IUserBalanceService {
 
     @Override
-    public Long getMaxBlockNo() {
+    public Long getMaxBlockNo(String userType) {
         QueryWrapper<UserBalance>  queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("userType",userType);
         queryWrapper.orderByDesc("updateTime").last("limit 1");
         UserBalance userBalance=  getOne(queryWrapper);
         if(userBalance==null) {

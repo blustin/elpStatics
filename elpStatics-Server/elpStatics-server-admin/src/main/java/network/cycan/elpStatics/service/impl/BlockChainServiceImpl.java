@@ -36,10 +36,9 @@ public class BlockChainServiceImpl implements IBlockChainService {
     @Override
     public void saveTodayBlockData(Date dateTime, String chainAddress, String userType) {
         //获取当前保存的区块数
-        Long fromBlockNo = iUserBalanceService.getMaxBlockNo();
-        if(fromBlockNo<5000000)
-        {
-            fromBlockNo=5000000L;
+        Long fromBlockNo = iUserBalanceService.getMaxBlockNo(userType);
+        if (fromBlockNo < 5000000) {
+            fromBlockNo = 5000000L;
         }
         long timestamp = dateTime.getTime() / 1000;
         //获取截止当前时间点的公链的区  块数，如果当前区块数大于当前的保持的区块数则不执行
@@ -47,14 +46,14 @@ public class BlockChainServiceImpl implements IBlockChainService {
         if (chainResultDto != null && BlockChainUtil.checkStatus(chainResultDto.getStatus())) {
             if (Long.parseLong(chainResultDto.getResult()) > fromBlockNo) {
                 Long targetBlockNo = Long.parseLong(chainResultDto.getResult());
+                HashMap<String, Long> userAddress = new HashMap<String, Long>();
                 for (Long startBlockNo = fromBlockNo; startBlockNo < targetBlockNo; ) {
                     Long subBlockIndex = startBlockNo + 100000;
                     try {
                         log.info("subBlockIndex=======" + subBlockIndex);
-                        HashMap<String, Long> userAddress = new HashMap<String, Long>();
                         TransactionRecorkResultDto transactionRecordResult = BlockChainUtil.getTransactionRecord(startBlockNo, subBlockIndex, chainAddress);
                         List<TransactionRecork> recorkList = new ArrayList<>();
-                        List<String> hashList=new ArrayList<>();
+                        List<String> hashList = new ArrayList<>();
                         //循环获取到的数据，先保存交易数据
                         for (TransactionRecorkDto log : transactionRecordResult.getResult()) {
                             TransactionRecork recork = new TransactionRecork();
@@ -66,6 +65,7 @@ public class BlockChainServiceImpl implements IBlockChainService {
                             recork.setFromUserAddress(log.getFrom());
                             recork.setToUserAddress(log.getTo());
                             recork.setHashCode(log.getHash());
+                            recork.setTranactionType(userType);
                             recorkList.add(recork);
                             hashList.add(log.getHash());
                             if (StringUtils.isNotEmpty(log.getFrom())) {
@@ -75,7 +75,7 @@ public class BlockChainServiceImpl implements IBlockChainService {
                                 userAddress.put(log.getTo(), log.getBlockNumberTEN());
                             }
                         }
-                        if(hashList.size()>0) {
+                        if (hashList.size() > 0) {
                             QueryWrapper<TransactionRecork> recorkWrapper = new QueryWrapper<>();
                             recorkWrapper.in("hashCode", hashList);
                             List<TransactionRecork> savedRecorks = iTransactionRecorkService.list(recorkWrapper);
@@ -84,47 +84,55 @@ public class BlockChainServiceImpl implements IBlockChainService {
                                             collect(Collectors.toList()).contains(item.getHashCode()))
                                     .collect(Collectors.toList());
                             iTransactionRecorkService.saveBatch(distinctByUniqueList);
-                            List<String> mList = new ArrayList<>(userAddress.keySet());
-                            QueryWrapper<UserBalance> userWrapper = new QueryWrapper<>();
-                            userWrapper.in("userAddress", mList);
-                            List<UserBalance> userBalances = iUserBalanceService.list(userWrapper);
-
-                            if (mList != null && !mList.isEmpty()) {
-                                for (int index = 0; index < mList.size(); index++) {
-                                    try {
-                                        log.info("index=======" + index);
-                                        String userItem = mList.get(index);
-//                                        boolean match=userBalances.stream().anyMatch(item -> item.getUserAddress().equals( userItem) && item.getBlockNum() == userAddress.get(userItem));
-//                                        if (match) {
-//                                            continue;
-//                                        }
-                                        ChainResultDto dto = BlockChainUtil.getAccountBalance(chainAddress, userItem);
-                                        UserBalance userBalance = new UserBalance();
-                                        userBalance.setUpdateTime(LocalDateTime.now());
-                                        userBalance.setCreateTime(LocalDateTime.now());
-                                        userBalance.setUserAddress(userItem);
-                                        userBalance.setBalanceAmount(new BigDecimal(dto.getResult()).divide(BlockChainUtil.RADIX_POINT));
-                                        userBalance.setBlockNum(userAddress.get(userItem));
-                                        userBalance.setUserBalanceId(UUIDUtils.randomUUID());
-                                        userBalance.setUserType(userType);
-                                        UpdateWrapper<UserBalance> updateWrapper = new UpdateWrapper<UserBalance>().eq("userAddress", userItem);
-                                        iUserBalanceService.saveOrUpdate(userBalance, updateWrapper);
-                                    } catch (Exception ex) {
-                                        log.error(ex.getMessage());
-                                        ex.printStackTrace();
-                                    }
-
-                                }
-                            }
                         }
                     } catch (Exception ex) {
                         log.error(ex.getMessage());
                         ex.printStackTrace();
                     }
-
                     startBlockNo = startBlockNo + 100000;
                 }
 
+                List<String> mList = new ArrayList<>(userAddress.keySet());
+                try {
+                    if (mList != null && !mList.isEmpty()) {
+                        for (int index = 0; index < mList.size(); index++) {
+                            try {
+                                log.info("index=======" + index);
+                                String userItem = mList.get(index);
+                                //判断是否存在当前块
+                                QueryWrapper<UserBalance> userBalanceQueryWrapper=new QueryWrapper<>();
+                                userBalanceQueryWrapper.eq("userAddress",userItem);
+                                userBalanceQueryWrapper.eq("userType",userType);
+                                userBalanceQueryWrapper.eq("blockNum",userAddress.get(userItem));
+                                int saveCount=  iUserBalanceService.count(userBalanceQueryWrapper);
+                                if(saveCount>0) {
+                                    continue;
+                                }
+                                ChainResultDto dto = BlockChainUtil.getAccountBalance(chainAddress, userItem);
+                                UserBalance userBalance = new UserBalance();
+                                userBalance.setUpdateTime(LocalDateTime.now());
+                                userBalance.setCreateTime(LocalDateTime.now());
+                                userBalance.setUserAddress(userItem);
+                                userBalance.setBalanceAmount(new BigDecimal(dto.getResult()).divide(BlockChainUtil.RADIX_POINT));
+                                userBalance.setBlockNum(userAddress.get(userItem));
+                                userBalance.setUserBalanceId(UUIDUtils.randomUUID());
+                                userBalance.setUserType(userType);
+                                UpdateWrapper<UserBalance> updateWrapper = new UpdateWrapper<UserBalance>();
+                                updateWrapper = updateWrapper.eq("userAddress", userItem);
+                                updateWrapper = updateWrapper.eq("userType", userType);
+                                iUserBalanceService.saveOrUpdate(userBalance, updateWrapper);
+                            } catch (Exception ex) {
+                                log.error(ex.getMessage());
+                                ex.printStackTrace();
+                            }
+
+                        }
+                    }
+                }catch (Exception ex)
+                {
+                    ex.printStackTrace();
+                    log.error(ex.getMessage());
+                }
             }
         }
 

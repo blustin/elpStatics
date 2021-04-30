@@ -55,6 +55,9 @@ public class BlockChainUtil {
         return null;
     }
 
+
+
+
     public static TransactionRecorkResultDto getTransactionRecord(Long fromBlock, Long toBlock, String contractAddress) {
         String url = String.format("https://api.bscscan.com/api?module=account&action=tokentx&startblock=%s&endblock=%s&sort=asc&contractaddress=%s&apikey=%s", fromBlock, toBlock, contractAddress, APIKEY);
         String strlogModel = HttpClientHelper.get(url);

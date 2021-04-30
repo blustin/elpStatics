@@ -40,7 +40,9 @@ public class UserTest {
     @Test
     public  void testBlockChainService()
     {
-        iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.ELP_CONTRACT_ADDREES, ChainContractType.ELP.getType());
+     iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.ELP_CONTRACT_ADDREES, ChainContractType.ELP.getType());
+    iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.LP_TOKEN_ADDRESS, ChainContractType.LP.getType());
+      //  iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.MOVING_CONTRACT_ADDRESS, ChainContractType.Moving.getType());
     }
 
 

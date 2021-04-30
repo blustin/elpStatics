@@ -67,6 +67,19 @@ public class TransactionRecork implements Serializable {
     @TableField("hashCode")
     private String hashCode;
 
+    @TableField("tranactionType")
+    private  String tranactionType;
+
+    public String getTranactionType() {
+        return tranactionType;
+    }
+
+    public void setTranactionType(String tranactionType) {
+        this.tranactionType = tranactionType;
+    }
+
+
+
     public Long getId() {
         return id;
     }
