@@ -1,5 +1,7 @@
 package network.cycan.elpStatics.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import network.cycan.elpStatics.model.dto.StsDailyDto;
 import network.cycan.elpStatics.model.entity.StsDailyContract;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -17,4 +19,5 @@ public interface IStsDailyContractService extends IService<StsDailyContract> {
 
     void dailyStatic(Date today);
 
+    IPage<StsDailyContract> pageByCondition(StsDailyDto dto);
 }

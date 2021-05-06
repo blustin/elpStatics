@@ -50,7 +50,10 @@ spring:
     settings.template_update_delay: 0
     settings.default_encoding: UTF-8
     settings.classic_compatible: true
+    settings.number_format: 0.##
     requestContextAttribute : tx
+
+
 # =======================quartz======================
 quartz:
   # 将任务等保存化到数据库

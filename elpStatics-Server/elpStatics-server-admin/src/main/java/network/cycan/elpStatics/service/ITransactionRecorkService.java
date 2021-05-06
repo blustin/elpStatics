@@ -1,5 +1,7 @@
 package network.cycan.elpStatics.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import network.cycan.elpStatics.model.dto.TransactionDto;
 import network.cycan.elpStatics.model.entity.TransactionRecork;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ITransactionRecorkService extends IService<TransactionRecork> {
 
+    IPage<TransactionRecork> pageByCondition(TransactionDto dto);
 }

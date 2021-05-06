@@ -1,8 +1,12 @@
 package network.cycan.elpStatics.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import network.cycan.core.util.DateUtils;
+import network.cycan.core.util.StringUtils;
 import network.cycan.core.util.UUIDUtils;
+import network.cycan.elpStatics.model.dto.StsDailyDto;
 import network.cycan.elpStatics.model.entity.StsDailyContract;
 import network.cycan.elpStatics.mapper.StsDailyContractMapper;
 import network.cycan.elpStatics.model.entity.UserBalance;
@@ -41,6 +45,9 @@ public class StsDailyContractServiceImpl extends ServiceImpl<StsDailyContractMap
 
     @Autowired
     private IBlockChainService iBlockChainService;
+
+    @Autowired
+    private StsDailyContractMapper stsDailyContractMapper;
 
     private final static DateTimeFormatter YYYY_MM_DD = DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD);
     @Override
@@ -83,11 +90,31 @@ public class StsDailyContractServiceImpl extends ServiceImpl<StsDailyContractMap
         //lp流动性总额
         BigDecimal lpMovingTotalBalance= iBlockChainService.getMovingBalance(BlockChainUtil.LP_TOKEN_ADDRESS,BlockChainUtil.MOVING_CONTRACT_ADDRESS);
         //   BigDecimal elpRate=elpMovingTotalBalance.divide(elpTotalBalance);
-        BigDecimal lpRate=lpMovingTotalBalance.divide(lpTotalBalance, 18, BigDecimal.ROUND_HALF_UP);
+        BigDecimal lpRate=lpMovingTotalBalance.divide(lpTotalBalance, 18, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
         stsDailyContract.setMovingLpBalanceRate(lpRate);
         stsDailyContract.setMovingLpTotalBalance(lpMovingTotalBalance);
         stsDailyContract.setContractStatisticsId(UUIDUtils.randomUUID());
         this.save(stsDailyContract);
 
+    }
+
+    @Override
+    public IPage<StsDailyContract> pageByCondition(StsDailyDto dto) {
+        IPage<StsDailyContract> stsDailyContractPage=new Page<>();
+        stsDailyContractPage.setSize(dto.getPageSize());
+        stsDailyContractPage.setCurrent(dto.getPageNo());
+        QueryWrapper<StsDailyContract> queryWrapper=new QueryWrapper<>();
+        if(StringUtils.isNotEmpty(dto.getStartDate()))
+        {
+            queryWrapper.ge("daily",dto.getStartDate());
+        }
+        if(StringUtils.isNotEmpty(dto.getEndDate()))
+        {
+            queryWrapper.le("daily",dto.getEndDate());
+        }
+        queryWrapper.orderByDesc("daily");
+
+        IPage<StsDailyContract> pageList= stsDailyContractMapper.selectPage(stsDailyContractPage,queryWrapper);
+        return pageList;
     }
 }

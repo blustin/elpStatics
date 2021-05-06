@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<header>
+    <#include "/includes/header.html" />
+    <link href="${tx.getContextPath()}/css/plugins/dataTables/dataTables.bootstrap.css?v=1.1" rel="stylesheet">
+</header>
+<body>
+<nav class="breadcrumb">
+    <div class="text-left float"></div>
+    <i class="Hui-iconfont">&#xe67f;</i>首页 <span class="c-gray en">&gt;</span>工作台<span class="c-gray en">&gt;</span>统计报表
+    <a class="btn btn-success radius r mr-20 "  style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新">刷新</a></nav>
+<div class="pd-20">
+    <div class="text-center">
+        <form action="${tx.getContextPath()}/daily/pageList" method="post" id="form">
+            <input type="hidden" value="${(pageList.total)!'0'}" name="totalCount" id="totalCount"/>
+            <input type="hidden" value="${(pageList.size)!'10'}" name="pageSize" id="pageSize"/>
+            <input type="hidden" value="${(dto.pageNo)!'1'}" name="pageNo" id="pageNo"/>
+            <label>日期：</label>
+            <input type="text" name="startDate" value="${(dto.startDate)!''}" class="input-text " style="width:120px;">至
+            <input type="text" name="endDate" value="${(dto.endDate)!''}" class="input-text " style="width:120px;">
+            <button type="submit" class="btn btn-success" id="searchBtn">搜索</button>
+        </form>
+    </div>
+    <table class="table table-border table-bordered table-hover table-bg table-sort " style="margin-top: 10px;">
+        <tr class="text-c">
+            <th>序号</th>
+            <th>日期</th>
+            <th>ELP地址总数</th>
+            <th>LP地址总数</th>
+            <th>ELP余额总数</th>
+            <th>LP余额总数</th>
+            <th>LP流动性合约余额总数</th>
+            <th>LP余额总数所占百分比%</th>
+        </tr>
+        <#list pageList.records as item>
+        <tr>
+            <td>${(item_index+1)!'-'}</td>
+            <td>${item.dailyStr!'-'}</td>
+            <td>${item.elpAddressCount!'-'}</td>
+            <td>${item.lpAddressCount!'-'}</td>
+            <td>${item.elpTotalBalance!'-'}</td>
+            <td>${item.lpTotalBalance!'-'}</td>
+            <td>${item.movingLpTotalBalance!'-'}</td>
+            <td>${item.movingLpBalanceRate!'-'}</td>
+        </tr>
+    </#list>
+    </table>
+    <div class="page_con pagination" id="page" <#if (pageList.total)?? && (pageList.total) == 0>style="display: none;"</#if> > </div>
+</div>
+
+
+<#include "/includes/footer.html" />
+<script type="text/javascript" src="${tx.getContextPath()}/js/pagination/page.js"></script>
+<script type="text/javascript">
+
+    $(function () {
+        totalCount = parseInt($.trim($("#totalCount").val()));
+        pageSize = parseInt($.trim($("#pageSize").val()));
+        pageNo = parseInt($.trim($("#pageNo").val()));
+        $("#page").pagination({
+            totalCount: totalCount,
+            pageSize: pageSize,
+            currentPage: pageNo - 1,
+            clickEvent: function (page_index) {
+                $("#pageNo").val(page_index + 1);
+                $("#form").submit();
+            }
+        });
+    });
+</script>
+</body>
+
+</html>
