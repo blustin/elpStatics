@@ -82,6 +82,19 @@ public class BlockChainUtil {
         return null;
     }
 
+    public static ChainResultDto getContractBalance(String contractAddress) {
+        String url = String.format("https://api.bscscan.com/api?module=stats&action=tokenCsupply&contractaddress=%s&apikey=%s", contractAddress, APIKEY);
+        String strBlockModel = HttpClientHelper.get(url);
+        log.info("getAccountBalance==返回==="+strBlockModel);
+        if (StringUtils.isNotEmpty(strBlockModel)) {
+            ChainResultDto dto = FastJsonUtil.getJsonToBean(strBlockModel, ChainResultDto.class);
+            return dto;
+        }
+        return null;
+    }
+
+
+
     //获取用户余额
     public static UserChainBalanceResultDto getBatchAccountBalance(List<String> addressList) {
         String strAddress=String.join(",",addressList);

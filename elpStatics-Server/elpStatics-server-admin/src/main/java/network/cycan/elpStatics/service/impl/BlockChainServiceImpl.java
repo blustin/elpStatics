@@ -37,8 +37,8 @@ public class BlockChainServiceImpl implements IBlockChainService {
     public void saveTodayBlockData(Date dateTime, String chainAddress, String userType) {
         //获取当前保存的区块数
         Long fromBlockNo = iUserBalanceService.getMaxBlockNo(userType);
-        if (fromBlockNo < 5000000) {
-            fromBlockNo = 5000000L;
+        if (fromBlockNo < 1) {
+            fromBlockNo = 0L;
         }
         long timestamp = dateTime.getTime() / 1000;
         //获取截止当前时间点的公链的区  块数，如果当前区块数大于当前的保持的区块数则不执行
@@ -137,5 +137,18 @@ public class BlockChainServiceImpl implements IBlockChainService {
         }
 
 
+    }
+
+    @Override
+    public  BigDecimal getContractTotalBalance(String contractAddress)
+    {
+        ChainResultDto resultDto=   BlockChainUtil.getContractBalance(contractAddress);
+        return new BigDecimal(resultDto.getResult()).divide(BlockChainUtil.RADIX_POINT);
+    }
+    @Override
+    public  BigDecimal getMovingBalance(String contractAddress,String address)
+    {
+        ChainResultDto dto = BlockChainUtil.getAccountBalance(contractAddress,address);
+        return new BigDecimal(dto.getResult()).divide(BlockChainUtil.RADIX_POINT);
     }
 }

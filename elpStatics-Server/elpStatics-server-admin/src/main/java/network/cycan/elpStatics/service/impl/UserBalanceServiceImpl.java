@@ -25,7 +25,7 @@ public class UserBalanceServiceImpl extends ServiceImpl<UserBalanceMapper, UserB
     public Long getMaxBlockNo(String userType) {
         QueryWrapper<UserBalance>  queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("userType",userType);
-        queryWrapper.orderByDesc("updateTime").last("limit 1");
+        queryWrapper.orderByDesc("blockNum").last("limit 1");
         UserBalance userBalance=  getOne(queryWrapper);
         if(userBalance==null) {
             return  0L;

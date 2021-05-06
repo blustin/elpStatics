@@ -3,6 +3,9 @@ package network.cycan.elpStatics.model.entity;
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -25,7 +28,13 @@ public class StsDailyContract implements Serializable {
     private String contractStatisticsId;
 
     @ApiModelProperty(value = "日期")
-    private String daily;
+    private LocalDate daily;
+    @ApiModelProperty(value = "日期字符串")
+    private String dailyStr;
+
+
+
+
 
     @ApiModelProperty(value = "ELP持币地址数")
     @TableField("elpAddressCount")
@@ -73,11 +82,11 @@ public class StsDailyContract implements Serializable {
     public void setContractStatisticsId(String contractStatisticsId) {
         this.contractStatisticsId = contractStatisticsId;
     }
-    public String getDaily() {
+    public LocalDate getDaily() {
         return daily;
     }
 
-    public void setDaily(String daily) {
+    public void setDaily(LocalDate daily) {
         this.daily = daily;
     }
     public Long getElpAddressCount() {
@@ -136,7 +145,13 @@ public class StsDailyContract implements Serializable {
     public void setMovingLpBalanceRate(BigDecimal movingLpBalanceRate) {
         this.movingLpBalanceRate = movingLpBalanceRate;
     }
+    public String getDailyStr() {
+        return dailyStr;
+    }
 
+    public void setDailyStr(String dailyStr) {
+        this.dailyStr = dailyStr;
+    }
     @Override
     public String toString() {
         return "StsDailyContract{" +

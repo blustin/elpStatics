@@ -6,6 +6,7 @@ import network.cycan.core.util.UUIDUtils;
 import network.cycan.elpStatics.enums.ChainContractType;
 import network.cycan.elpStatics.model.entity.UserBalance;
 import network.cycan.elpStatics.service.IBlockChainService;
+import network.cycan.elpStatics.service.IStsDailyContractService;
 import network.cycan.elpStatics.service.IUserBalanceService;
 import network.cycan.elpStatics.util.BlockChainUtil;
 import org.junit.Test;
@@ -25,6 +26,8 @@ public class UserTest {
     private IUserBalanceService iUserBalanceService;
     @Autowired
     private IBlockChainService iBlockChainService;
+    @Autowired
+    private IStsDailyContractService iStsDailyContractService;
     @Test
     public void AddUser()
     {
@@ -41,9 +44,14 @@ public class UserTest {
     public  void testBlockChainService()
     {
      iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.ELP_CONTRACT_ADDREES, ChainContractType.ELP.getType());
-    iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.LP_TOKEN_ADDRESS, ChainContractType.LP.getType());
+     iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.LP_TOKEN_ADDRESS, ChainContractType.LP.getType());
       //  iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.MOVING_CONTRACT_ADDRESS, ChainContractType.Moving.getType());
     }
 
+    @Test
+    public  void stsBlockChainService()
+    {
+        iStsDailyContractService.dailyStatic(DateUtils.today());
+    }
 
 }
