@@ -8,20 +8,20 @@
 <nav class="breadcrumb">
     <div class="text-left float"></div>
     <i class="Hui-iconfont">&#xe67f;</i>首页 <span class="c-gray en">&gt;</span>工作台
-    <#if dto.tranactionType="1">
-    <span class="c-gray en">&gt;</span>elp交易明细
-    <#elseif  dto.tranactionType="2">
-    <span class="c-gray en">&gt;</span>lp交易明细
-    </#if>
+    <#if dto.userType="1">
+    <span class="c-gray en">&gt;</span>elp用户明细
+    <#elseif  dto.userType="2">
+    <span class="c-gray en">&gt;</span>lp用户明细
+</#if>
 
-    <a class="btn btn-success radius r mr-20 "  style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新">刷新</a></nav>
+<a class="btn btn-success radius r mr-20 "  style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新">刷新</a></nav>
 <div class="pd-20">
     <div class="text-center">
-        <form action="${tx.getContextPath()}/transaction/pageList" method="post" id="form">
+        <form action="${tx.getContextPath()}/user/pageList" method="post" id="form">
             <input type="hidden" value="${(pageList.total)!'0'}" name="totalCount" id="totalCount"/>
             <input type="hidden" value="${(pageList.size)!'10'}" name="pageSize" id="pageSize"/>
             <input type="hidden" value="${(dto.pageNo)!'1'}" name="pageNo" id="pageNo"/>
-            <input type="hidden" value="${(dto.tranactionType)!'1'}" name="tranactionType" id="tranactionType"/>
+            <input type="hidden" value="${(dto.userType)!'1'}" name="userType" id="userType"/>
             <label>日期：</label>
             <input type="text" name="startDate" value="${(dto.startDate)!''}" class="input-text " style="width:120px;">至
             <input type="text" name="endDate" value="${(dto.endDate)!''}" class="input-text " style="width:120px;">
@@ -30,23 +30,21 @@
     </div>
     <table class="table table-border table-bordered table-hover table-bg table-sort " style="margin-top: 10px;">
         <tr class="text-c">
-
             <th>id</th>
-            <th>交易时间</th>
-            <th>发起用户</th>
-            <th>接收用户</th>
-            <th>交易金额</th>
+            <th>用户地址</th>
+            <th>余额</th>
             <th>创建时间</th>
-
+            <th>更新时间</th>
+            <th>最后区块</th>
         </tr>
         <#list pageList.records as item>
         <tr>
-            <td>${item.id?c}</td>
-            <td>${(item.transactionTime?string("yyyy-MM-dd HH:mm:ss"))!}</td>
-            <td>${item.fromUserAddress!'-'}</td>
-            <td>${item.toUserAddress!'-'}</td>
-            <td>${item.transactionAmount!'-'}</td>
+            <td>${item.id}</td>
+            <td>${item.userAddress!'-'}</td>
+            <td>${item.balanceAmount!'-'}</td>
             <td>${(item.createTime?string("yyyy-MM-dd HH:mm:ss"))!}</td>
+            <td>${(item.updateTime?string("yyyy-MM-dd HH:mm:ss"))!}</td>
+            <td>${item.blockNum!'-'}</td>
         </tr>
     </#list>
     </table>
