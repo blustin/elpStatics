@@ -7,24 +7,36 @@
 <body>
 <nav class="breadcrumb">
     <div class="text-left float"></div>
+    <div class="text-left " style="line-height: 30px;margin: 10px;">
     <i class="Hui-iconfont">&#xe67f;</i>首页 <span class="c-gray en">&gt;</span>工作台
     <#if dto.userType="1">
     <span class="c-gray en">&gt;</span>elp用户明细
     <#elseif  dto.userType="2">
     <span class="c-gray en">&gt;</span>lp用户明细
 </#if>
+    <a class="btn btn-success radius r mr-20 "  style="line-height:1.6em;margin-top:3px;float: right" href="javascript:location.replace(location.href);" title="刷新">刷新</a></nav>
+    </div>
 
-<a class="btn btn-success radius r mr-20 "  style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新">刷新</a></nav>
-<div class="pd-20">
+<div class="pd-20" style="margin: 20px;">
     <div class="text-center">
-        <form action="${tx.getContextPath()}/user/pageList" method="post" id="form">
+        <form action="${tx.getContextPath()}/user/pageList" method="post" id="form" class="form-inline">
             <input type="hidden" value="${(pageList.total)!'0'}" name="totalCount" id="totalCount"/>
             <input type="hidden" value="${(pageList.size)!'10'}" name="pageSize" id="pageSize"/>
             <input type="hidden" value="${(dto.pageNo)!'1'}" name="pageNo" id="pageNo"/>
             <input type="hidden" value="${(dto.userType)!'1'}" name="userType" id="userType"/>
-            <label>日期：</label>
-            <input type="text" name="startDate" value="${(dto.startDate)!''}" class="input-text " style="width:120px;">至
-            <input type="text" name="endDate" value="${(dto.endDate)!''}" class="input-text " style="width:120px;">
+
+            <label class="font-noraml">用户地址:</label>
+            <input type="text" class="input-sm form-control" name="userAddress" value="${(dto.userAddress)!''}" />
+            <label class="font-noraml">交易金额:</label>
+            <input type="text" class="input-sm form-control" name="fromAmount" value="${(dto.fromAmount)!''}" />
+            至
+            <input type="text" class="input-sm form-control" name="toAmount" value="${(dto.toAmount)!''}" />
+            <label class="font-noraml">归档日期:</label>
+            <div class="input-daterange input-group" id="datepicker">
+                <input type="text" class="input-sm form-control" name="startDate" value="${(dto.startDate)!''}" />
+                <span class="input-group-addon">到</span>
+                <input type="text" class="input-sm form-control" name="endDate" value="${(dto.endDate)!''}" />
+            </div>
             <button type="submit" class="btn btn-success" id="searchBtn">搜索</button>
         </form>
     </div>
@@ -54,8 +66,8 @@
 
 <#include "/includes/footer.html" />
 <script type="text/javascript" src="${tx.getContextPath()}/js/pagination/page.js"></script>
+<script src="${tx.getContextPath()}/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script type="text/javascript">
-
     $(function () {
         totalCount = parseInt($.trim($("#totalCount").val()));
         pageSize = parseInt($.trim($("#pageSize").val()));
@@ -68,6 +80,11 @@
                 $("#pageNo").val(page_index + 1);
                 $("#form").submit();
             }
+        });
+        $('.input-daterange').datepicker({
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true
         });
     });
 </script>

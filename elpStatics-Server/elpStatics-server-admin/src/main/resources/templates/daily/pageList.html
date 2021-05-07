@@ -7,21 +7,28 @@
 <body>
 <nav class="breadcrumb">
     <div class="text-left float"></div>
+    <div class="text-left " style="line-height: 30px;margin: 10px;">
     <i class="Hui-iconfont">&#xe67f;</i>首页 <span class="c-gray en">&gt;</span>工作台<span class="c-gray en">&gt;</span>统计报表
-    <a class="btn btn-success radius r mr-20 "  style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新">刷新</a></nav>
+    <a class="btn btn-success radius r mr-20 "    href="javascript:location.replace(location.href);" title="刷新">刷新</a>
+    </div>
+</nav>
+
 <div class="pd-20">
     <div class="text-center">
-        <form action="${tx.getContextPath()}/daily/pageList" method="post" id="form">
+        <form action="${tx.getContextPath()}/daily/pageList" method="post" id="form" class="form-inline">
             <input type="hidden" value="${(pageList.total)!'0'}" name="totalCount" id="totalCount"/>
             <input type="hidden" value="${(pageList.size)!'10'}" name="pageSize" id="pageSize"/>
             <input type="hidden" value="${(dto.pageNo)!'1'}" name="pageNo" id="pageNo"/>
-            <label>日期：</label>
-            <input type="text" name="startDate" value="${(dto.startDate)!''}" class="input-text " style="width:120px;">至
-            <input type="text" name="endDate" value="${(dto.endDate)!''}" class="input-text " style="width:120px;">
-            <button type="submit" class="btn btn-success" id="searchBtn">搜索</button>
+            <label class="font-noraml">统计日期:</label>
+                <div class="input-daterange input-group" id="datepicker">
+                    <input type="text" class="input-sm form-control" name="startDate" value="${(dto.startDate)!''}" />
+                    <span class="input-group-addon">到</span>
+                    <input type="text" class="input-sm form-control" name="endDate" value="${(dto.endDate)!''}" />
+                </div>
+             <button type="submit" class="btn btn-success" id="searchBtn">搜索</button>
         </form>
     </div>
-    <table class="table table-border table-bordered table-hover table-bg table-sort " style="margin-top: 10px;">
+    <table class="table table-border table-bordered table-hover table-bg table-sort " style="margin: 20px;">
         <tr class="text-c">
             <th>序号</th>
             <th>日期</th>
@@ -50,6 +57,8 @@
 
 
 <#include "/includes/footer.html" />
+<!-- Data picker -->
+<script src="${tx.getContextPath()}/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${tx.getContextPath()}/js/pagination/page.js"></script>
 <script type="text/javascript">
 
@@ -66,6 +75,12 @@
                 $("#form").submit();
             }
         });
+        $('.input-daterange').datepicker({
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true
+        });
+
     });
 </script>
 </body>
