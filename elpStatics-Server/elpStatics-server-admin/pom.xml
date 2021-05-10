@@ -124,18 +124,13 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-quartz</artifactId>
         <version>2.2.6.RELEASE</version>
-
         </dependency>
-<!--        <dependency> &lt;!&ndash;quartz依赖&ndash;&gt;-->
-<!--            <groupId>org.quartz-scheduler</groupId>-->
-<!--            <artifactId>quartz</artifactId>-->
-<!--            <version>2.2.3</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.quartz-scheduler</groupId>-->
-<!--            <artifactId>quartz-jobs</artifactId>-->
-<!--            <version>2.2.3</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.web3j</groupId>
+            <artifactId>core</artifactId>
+            <version>4.3.0</version>
+        </dependency>
+
         <!--海云天内部依赖-->
         <dependency>
             <groupId>network.cycan</groupId>

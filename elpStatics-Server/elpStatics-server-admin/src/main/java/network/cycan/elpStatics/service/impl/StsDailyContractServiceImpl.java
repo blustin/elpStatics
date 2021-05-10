@@ -15,16 +15,13 @@ import network.cycan.elpStatics.service.IStsDailyContractService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import network.cycan.elpStatics.service.ITransactionRecorkService;
 import network.cycan.elpStatics.service.IUserBalanceService;
-import network.cycan.elpStatics.util.BlockChainUtil;
+import network.cycan.elpStatics.util.HttpBlockChainUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.unit.DataUnit;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -80,15 +77,24 @@ public class StsDailyContractServiceImpl extends ServiceImpl<StsDailyContractMap
         BigDecimal lpBalanceTotal=new BigDecimal(String.valueOf( lpAddressMap.get("balanceTotal")));
         stsDailyContract.setLpTotalBalance(lpBalanceTotal);
         // * 流动性挖矿合约中LP余额总数
+        // * 流动性挖矿合约中LP持币地址总数
+        QueryWrapper <UserBalance> moviingAddres=new QueryWrapper<>();
+        moviingAddres.select("count(userAddress) as userAccount,sum(balanceAmount) as balanceTotal  ");
+        moviingAddres.eq("userType","3");
+        Map<String,Object> movingAddressMap=iUserBalanceService.getMap(moviingAddres);
+        Long movingUserAccount=Long.valueOf(String.valueOf(movingAddressMap.get("userAccount")));
+        stsDailyContract.setMovingLpAddressCount(movingUserAccount);
+        BigDecimal movingBalanceTotal=new BigDecimal(String.valueOf( movingAddressMap.get("balanceTotal")));
+        stsDailyContract.setMovingLpTotalBalance(movingBalanceTotal);
         // * 流动性挖矿合约中LP余额总数所占百分比
      //elp总余额
-         BigDecimal elpTotalBalance= iBlockChainService.getContractTotalBalance(BlockChainUtil.ELP_CONTRACT_ADDREES);
+         BigDecimal elpTotalBalance= iBlockChainService.getContractTotalBalance(HttpBlockChainUtil.ELP_CONTRACT_ADDREES);
         //lp总余额
-        BigDecimal lpTotalBalance= iBlockChainService.getContractTotalBalance(BlockChainUtil.LP_TOKEN_ADDRESS);
+        BigDecimal lpTotalBalance= iBlockChainService.getContractTotalBalance(HttpBlockChainUtil.LP_TOKEN_ADDRESS);
        //elp流动性总额
 //        BigDecimal elpMovingTotalBalance= iBlockChainService.getMovingBalance(BlockChainUtil.ELP_CONTRACT_ADDREES,BlockChainUtil.MOVING_CONTRACT_ADDRESS);
         //lp流动性总额
-        BigDecimal lpMovingTotalBalance= iBlockChainService.getMovingBalance(BlockChainUtil.LP_TOKEN_ADDRESS,BlockChainUtil.MOVING_CONTRACT_ADDRESS);
+        BigDecimal lpMovingTotalBalance= iBlockChainService.getMovingBalance(HttpBlockChainUtil.LP_TOKEN_ADDRESS, HttpBlockChainUtil.MOVING_CONTRACT_ADDRESS);
         //   BigDecimal elpRate=elpMovingTotalBalance.divide(elpTotalBalance);
         BigDecimal lpRate=lpMovingTotalBalance.divide(lpTotalBalance, 18, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
         stsDailyContract.setMovingLpBalanceRate(lpRate);

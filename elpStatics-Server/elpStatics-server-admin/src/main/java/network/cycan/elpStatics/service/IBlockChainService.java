@@ -10,4 +10,6 @@ public interface IBlockChainService {
       BigDecimal getContractTotalBalance(String contractAddress);
 
       BigDecimal getMovingBalance(String contractAddress,String address);
+
+      void  saveMovingBalance( Date date);
 }

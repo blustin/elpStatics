@@ -1,6 +1,6 @@
 package network.cycan.elpStatics.model.dto;
 
-import network.cycan.elpStatics.util.BlockChainUtil;
+import network.cycan.elpStatics.util.HttpBlockChainUtil;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -102,7 +102,7 @@ public class TransactionRecorkDto  implements Serializable {
     }
     public BigDecimal getTrasactionAmount()
     {
-        return new BigDecimal( value).divide(BlockChainUtil.RADIX_POINT);
+        return new BigDecimal( value).divide(HttpBlockChainUtil.RADIX_POINT);
     }
     public void setValue(String value) {
         this.value = value;

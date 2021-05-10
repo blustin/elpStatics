@@ -8,13 +8,15 @@ import network.cycan.elpStatics.model.entity.UserBalance;
 import network.cycan.elpStatics.service.IBlockChainService;
 import network.cycan.elpStatics.service.IStsDailyContractService;
 import network.cycan.elpStatics.service.IUserBalanceService;
-import network.cycan.elpStatics.util.BlockChainUtil;
+import network.cycan.elpStatics.util.HttpBlockChainUtil;
+import network.cycan.elpStatics.util.RpcBlockChainUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -46,8 +48,8 @@ public class UserTest {
         log.info("定时任务启动====="+DateUtils.getNowTime(DateUtils.YYYY_MM_DD_HH_MM_SS));
         try
         {
-            iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.ELP_CONTRACT_ADDREES, ChainContractType.ELP.getType());
-            iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.LP_TOKEN_ADDRESS, ChainContractType.LP.getType());
+            iBlockChainService.saveTodayBlockData(DateUtils.today(), HttpBlockChainUtil.ELP_CONTRACT_ADDREES, ChainContractType.ELP.getType());
+            iBlockChainService.saveTodayBlockData(DateUtils.today(), HttpBlockChainUtil.LP_TOKEN_ADDRESS, ChainContractType.LP.getType());
             iStsDailyContractService.dailyStatic(DateUtils.today());
         }catch (Exception ex){
             ex.printStackTrace();
@@ -61,6 +63,11 @@ public class UserTest {
     public  void stsBlockChainService()
     {
         iStsDailyContractService.dailyStatic(DateUtils.today());
+    }
+
+    @Test
+    public void testgetBalance()throws IOException {
+        RpcBlockChainUtil.getBalance("0x6f93A648e39BE8f57ceb90a91ea6688F986B0DeF",HttpBlockChainUtil.MOVING_CONTRACT_ADDRESS);
     }
 
 }

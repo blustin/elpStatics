@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class BlockChainUtil {
+public class HttpBlockChainUtil {
     public static final String APIKEY = "UVJIY1RQ348R5CJX9225SA8YIM95YMWA39";
 
     public static final String ELP_CONTRACT_ADDREES = "0xe3894cb9e92ca78524fb6a30ff072fa5e533c162";
@@ -24,9 +24,6 @@ public class BlockChainUtil {
     public static final String LP_TOPIC0 = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
 
     public static final String MOVING_CONTRACT_ADDRESS = "0xe62bb7f26588628229b7f184c4eb84c2baff299d";
-    public static final String MOVING_CONTRACT_DEPOSIT = "0x90890809c654f11d6e72a28fa60149770a0d11ec6c92319d6ceb2bb0a4ea1a15";
-    public static final String MOVING_CONTRACT_WITHDRAW = "0xf279e6a1f5e320cca91135676d9cb6e44ca8a08c0b88342bcdb1144f6511b568";
-    public static final String MOVING_CONTRACT_EMERGENCYWITHDRAW = "0xbb757047c2b5f3974fe26b7c10f732e7bce710b0952a71082702781e62ae0595";
 
     public static  final BigDecimal RADIX_POINT=new BigDecimal(Math.pow(10,18));
 

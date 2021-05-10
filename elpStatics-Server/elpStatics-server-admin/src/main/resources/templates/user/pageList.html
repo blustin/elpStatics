@@ -13,6 +13,8 @@
     <span class="c-gray en">&gt;</span>elp用户明细
     <#elseif  dto.userType="2">
     <span class="c-gray en">&gt;</span>lp用户明细
+    <#elseif  dto.userType="3">
+     <span class="c-gray en">&gt;</span>流动性合约明细
 </#if>
     <a class="btn btn-success radius r mr-20 "  style="line-height:1.6em;margin-top:3px;float: right" href="javascript:location.replace(location.href);" title="刷新">刷新</a></nav>
     </div>
@@ -38,6 +40,9 @@
                 <input type="text" class="input-sm form-control" name="endDate" value="${(dto.endDate)!''}" />
             </div>
             <button type="submit" class="btn btn-success" id="searchBtn">搜索</button>
+            <#if dto.userType="3">
+            <button type="submit" class="btn btn-success" onclick="refreshMovingBalance()" id="refreshBtn">刷新余额</button>
+            </#if>
         </form>
     </div>
     <table class="table table-border table-bordered table-hover table-bg table-sort " style="margin-top: 10px;">
@@ -71,6 +76,11 @@
 <script type="text/javascript" src="${tx.getContextPath()}/js/pagination/page.js"></script>
 <script src="${tx.getContextPath()}/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script type="text/javascript">
+    function refreshMovingBalance() {
+        var movingUrl='${tx.getContextPath()}/user/refreshMovingBalance';
+        $.ajax({url:movingUrl});
+        alert("流动性挖矿刷新请求已经发，请稍后再刷新，大约1个小时");
+    }
     $(function () {
         totalCount = parseInt($.trim($("#totalCount").val()));
         pageSize = parseInt($.trim($("#pageSize").val()));
@@ -89,6 +99,7 @@
             forceParse: false,
             autoclose: true
         });
+
     });
 </script>
 </body>

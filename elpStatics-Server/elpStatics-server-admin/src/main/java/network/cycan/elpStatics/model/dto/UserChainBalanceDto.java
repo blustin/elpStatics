@@ -1,6 +1,6 @@
 package network.cycan.elpStatics.model.dto;
 
-import network.cycan.elpStatics.util.BlockChainUtil;
+import network.cycan.elpStatics.util.HttpBlockChainUtil;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,7 +12,7 @@ public class UserChainBalanceDto implements Serializable  {
 
     public BigDecimal getUserBalance()
     {
-        return new BigDecimal( balance).divide(BlockChainUtil.RADIX_POINT);
+        return new BigDecimal( balance).divide(HttpBlockChainUtil.RADIX_POINT);
     }
     public String getAccount() {
         return account;

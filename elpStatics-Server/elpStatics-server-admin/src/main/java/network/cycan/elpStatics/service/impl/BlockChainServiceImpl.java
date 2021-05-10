@@ -1,25 +1,25 @@
 package network.cycan.elpStatics.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.extern.slf4j.Slf4j;
-import network.cycan.core.util.DateUtils;
 import network.cycan.core.util.StringUtils;
 import network.cycan.core.util.UUIDUtils;
+import network.cycan.elpStatics.enums.ChainContractType;
 import network.cycan.elpStatics.model.dto.*;
 import network.cycan.elpStatics.model.entity.TransactionRecork;
 import network.cycan.elpStatics.model.entity.UserBalance;
 import network.cycan.elpStatics.service.IBlockChainService;
 import network.cycan.elpStatics.service.ITransactionRecorkService;
 import network.cycan.elpStatics.service.IUserBalanceService;
-import network.cycan.elpStatics.util.BlockChainUtil;
+import network.cycan.elpStatics.util.HttpBlockChainUtil;
+import network.cycan.elpStatics.util.RpcBlockChainUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.security.util.ArrayUtil;
 
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -42,8 +42,8 @@ public class BlockChainServiceImpl implements IBlockChainService {
         }
         Long timestamp = dateTime.getTime() / 1000;
         //获取截止当前时间点的公链的区  块数，如果当前区块数大于当前的保持的区块数则不执行
-        ChainResultDto chainResultDto = BlockChainUtil.getBlocknoByTime(timestamp);
-        if (chainResultDto != null && BlockChainUtil.checkStatus(chainResultDto.getStatus())) {
+        ChainResultDto chainResultDto = HttpBlockChainUtil.getBlocknoByTime(timestamp);
+        if (chainResultDto != null && HttpBlockChainUtil.checkStatus(chainResultDto.getStatus())) {
 
             if (Long.parseLong(chainResultDto.getResult()) > fromBlockNo) {
                 Long targetBlockNo = Long.parseLong(chainResultDto.getResult());
@@ -52,7 +52,7 @@ public class BlockChainServiceImpl implements IBlockChainService {
                     Long subBlockIndex = startBlockNo + 100000;
                     try {
                         log.info("subBlockIndex=======" + subBlockIndex);
-                        TransactionRecorkResultDto transactionRecordResult = BlockChainUtil.getTransactionRecord(startBlockNo, subBlockIndex, chainAddress);
+                        TransactionRecorkResultDto transactionRecordResult = HttpBlockChainUtil.getTransactionRecord(startBlockNo, subBlockIndex, chainAddress);
                         List<TransactionRecork> recorkList = new ArrayList<>();
                         List<String> hashList = new ArrayList<>();
                         //循环获取到的数据，先保存交易数据
@@ -109,12 +109,12 @@ public class BlockChainServiceImpl implements IBlockChainService {
                                 if(saveCount>0) {
                                     continue;
                                 }
-                                ChainResultDto dto = BlockChainUtil.getAccountBalance(chainAddress, userItem);
+                                ChainResultDto dto = HttpBlockChainUtil.getAccountBalance(chainAddress, userItem);
                                 UserBalance userBalance = new UserBalance();
                                 userBalance.setUpdateTime(LocalDateTime.now());
                                 userBalance.setCreateTime(LocalDateTime.now());
                                 userBalance.setUserAddress(userItem);
-                                userBalance.setBalanceAmount(new BigDecimal(dto.getResult()).divide(BlockChainUtil.RADIX_POINT));
+                                userBalance.setBalanceAmount(new BigDecimal(dto.getResult()).divide(HttpBlockChainUtil.RADIX_POINT));
                                 userBalance.setBlockNum(userAddress.get(userItem));
                                 userBalance.setUserBalanceId(UUIDUtils.randomUUID());
                                 userBalance.setUserType(userType);
@@ -143,13 +143,49 @@ public class BlockChainServiceImpl implements IBlockChainService {
     @Override
     public  BigDecimal getContractTotalBalance(String contractAddress)
     {
-        ChainResultDto resultDto=   BlockChainUtil.getContractBalance(contractAddress);
-        return new BigDecimal(resultDto.getResult()).divide(BlockChainUtil.RADIX_POINT);
+        ChainResultDto resultDto=   HttpBlockChainUtil.getContractBalance(contractAddress);
+        return new BigDecimal(resultDto.getResult()).divide(HttpBlockChainUtil.RADIX_POINT);
     }
     @Override
     public  BigDecimal getMovingBalance(String contractAddress,String address)
     {
-        ChainResultDto dto = BlockChainUtil.getAccountBalance(contractAddress,address);
-        return new BigDecimal(dto.getResult()).divide(BlockChainUtil.RADIX_POINT);
+        ChainResultDto dto = HttpBlockChainUtil.getAccountBalance(contractAddress,address);
+        return new BigDecimal(dto.getResult()).divide(HttpBlockChainUtil.RADIX_POINT);
+    }
+
+    @Override
+    public void saveMovingBalance(Date date) {
+        QueryWrapper<UserBalance> userBalanceQueryWrapper=new QueryWrapper<>();
+        userBalanceQueryWrapper.eq("userType", ChainContractType.ELP.getType());
+        List<UserBalance> userBalanceLists=   iUserBalanceService.list(userBalanceQueryWrapper);
+        List<UserBalance> saveBalanceList=new ArrayList<>();
+        int index=0;
+        for (UserBalance item : userBalanceLists) {
+            try {
+                QueryWrapper<UserBalance> movingWrapper=new QueryWrapper<>();
+                movingWrapper.eq("userType",ChainContractType.Moving.getType());
+                movingWrapper.eq("userAddress",item.getUserAddress());
+                UserBalance one= iUserBalanceService.getOne(movingWrapper);
+                BigDecimal bigDecimal=RpcBlockChainUtil.getBalance(item.getUserAddress(),HttpBlockChainUtil.MOVING_CONTRACT_ADDRESS);
+                if(one==null) {
+                    one=new UserBalance();
+                    one.setCreateTime(LocalDateTime.now());
+                    one.setUserAddress(item.getUserAddress());
+                    one.setUserBalanceId(UUIDUtils.randomUUID());
+                    one.setUserType(ChainContractType.Moving.getType());
+                }
+                one.setBalanceAmount(bigDecimal);
+                one.setBlockNum(item.getBlockNum());
+                one.setUpdateTime(LocalDateTime.now());
+                saveBalanceList.add(one);
+                log.info("index==="+index+"=====size=="+userBalanceLists.size());
+                index=index+1;
+            }catch (Exception ex )
+            {
+                ex.printStackTrace();
+                log.error("saveMovingBalance==="+ex.getMessage());
+            }
+        }
+        iUserBalanceService.saveOrUpdateBatch(saveBalanceList);
     }
 }
