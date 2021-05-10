@@ -6,16 +6,16 @@ server:
 
 spring:
   application:
-    name: artshowshopper
+    name: elpStatics-admin
   servlet:
     multipart:
       maxFileSize: 100MB
       maxRequestSize: 100MB
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    username: root
-    password: abc@123
-    url: jdbc:mysql://localhost:3306/cycan?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+    username: cycan_elpstatics2020
+    password: cycan_elpstatics@2020!123
+    url: jdbc:mysql://rm-3nszvdf1374v2c0tr.mysql.rds.aliyuncs.com:3306/cycan_elpstatics?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
   main:
     allow-bean-definition-overriding: true
 
@@ -51,7 +51,7 @@ spring:
     settings.default_encoding: UTF-8
     settings.classic_compatible: true
     settings.number_format: 0.##
-    requestContextAttribute : tx
+    requestContextAttribute: tx
 
 
 # =======================quartz======================
@@ -128,9 +128,9 @@ basis.druid:
   #  防御sql注入的filter:wall
   filters: stat
   # 访问的用户名
-  loginUsername: root
+  loginUsername: cycan_elpstatics2020
   # 访问的密码
-  loginPassword: artshow
+  loginPassword: cycan_elpstatics@2020!123
 
 
 # ====================MybatisPlus====================
@@ -171,3 +171,5 @@ management:
 
 
 
+logging:
+  config: classpath:logback-spring.xml

@@ -60,7 +60,10 @@
         </tr>
     </#list>
     </table>
-    <div class="page_con pagination" id="page" <#if (pageList.total)?? && (pageList.total) == 0>style="display: none;"</#if> > </div>
+    <div class="page-wrapper">
+        <div class="page_con pagination" id="page" <#if (pageList.total)?? && (pageList.total) == 0>style="display: none;"</#if> > </div>
+<div class="dataTables_info" id="editable_info" style="float: right;" >总共 ${(pageList.total)!'0'} 条</div>
+</div>
 </div>
 
 

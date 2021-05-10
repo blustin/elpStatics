@@ -1,15 +1,14 @@
 package network.cycan.elpStatics.util;
 
 import lombok.extern.slf4j.Slf4j;
-import network.cycan.core.util.FastJsonUtil;
-import network.cycan.core.util.HttpClientHelper;
-import network.cycan.core.util.StringUtils;
+import network.cycan.core.util.*;
 import network.cycan.elpStatics.model.dto.ChainResultDto;
 import network.cycan.elpStatics.model.dto.ChainLogDto;
 import network.cycan.elpStatics.model.dto.TransactionRecorkResultDto;
 import network.cycan.elpStatics.model.dto.UserChainBalanceResultDto;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,25 +32,46 @@ public class BlockChainUtil {
 
     //获取链上区块数量
     public static ChainResultDto getBlocknoByTime(Long timestamp) {
-        String url = String.format("https://api.bscscan.com/api?module=block&action=getblocknobytime&closest=before&timestamp=%s&apikey=%s", timestamp, APIKEY);
-        String strBlockModel = HttpClientHelper.get(url);
-        log.info("getBlocknoByTime==返回==="+strBlockModel);
-        if (StringUtils.isNotEmpty(strBlockModel)) {
+        try {
+            String url = String.format("https://api.bscscan.com/api?module=block&action=getblocknobytime&closest=before&timestamp=%s&apikey=%s", timestamp, APIKEY);
+            String strBlockModel = HttpClientHelper.get(url);
+            log.info("getBlocknoByTime==返回===" + strBlockModel);
+            if (StringUtils.isNotEmpty(strBlockModel)) {
+                ChainResultDto dto = FastJsonUtil.getJsonToBean(strBlockModel, ChainResultDto.class);
+                if(null!=dto&&checkStatus(dto.getStatus())&& ValidateUtils.isZIndex(dto.getResult()))
+                {
+                    return dto;
 
-            ChainResultDto dto = FastJsonUtil.getJsonToBean(strBlockModel, ChainResultDto.class);
-            return dto;
+                }else
+                {
+                    Date dt= DateUtils.parseDate(DateUtils.stampToDate(timestamp.toString()));
+                    Date before2Hour= DateUtils.addHour(dt,-2);
+                   return  getBlocknoByTime( DateUtils.convertDateTamsp(before2Hour.getTime()));
+                }
+
+            }
+        }catch (Exception ex )
+        {
+            log.error(ex.getMessage());
+            ex.printStackTrace();
         }
         return null;
     }
 
     public static ChainLogDto getLogs(Long fromBlock, Long toBlock, String address, String topic0) {
-        String url = String.format("https://api.bscscan.com/api?module=logs&action=getLogs&fromBlock=%s&toBlock=%s&address=%s&topic0=%s&apikey=%s", fromBlock, toBlock, address, topic0, APIKEY);
-        String strlogModel = HttpClientHelper.get(url);
-        log.info("getLogs==返回==="+strlogModel);
-        if (StringUtils.isNotEmpty(strlogModel)) {
-            ChainLogDto dto = FastJsonUtil.getJsonToBean(strlogModel, ChainLogDto.class);
-            return dto;
+        try {
+            String url = String.format("https://api.bscscan.com/api?module=logs&action=getLogs&fromBlock=%s&toBlock=%s&address=%s&topic0=%s&apikey=%s", fromBlock, toBlock, address, topic0, APIKEY);
+            String strlogModel = HttpClientHelper.get(url);
+            log.info("getLogs==返回===" + strlogModel);
+            if (StringUtils.isNotEmpty(strlogModel)) {
+                ChainLogDto dto = FastJsonUtil.getJsonToBean(strlogModel, ChainLogDto.class);
+                return dto;
+            }
+        }catch (Exception ex){
+            log.error(ex.getMessage());
+            ex.printStackTrace();
         }
+
         return null;
     }
 
@@ -60,18 +80,25 @@ public class BlockChainUtil {
 
     public static TransactionRecorkResultDto getTransactionRecord(Long fromBlock, Long toBlock, String contractAddress) {
         String url = String.format("https://api.bscscan.com/api?module=account&action=tokentx&startblock=%s&endblock=%s&sort=asc&contractaddress=%s&apikey=%s", fromBlock, toBlock, contractAddress, APIKEY);
-        String strlogModel = HttpClientHelper.get(url);
+        try {
+            String strlogModel = HttpClientHelper.get(url);
 
-        log.info("getTransactionRecord==返回==="+strlogModel);
-        if (StringUtils.isNotEmpty(strlogModel)) {
-            TransactionRecorkResultDto dto = FastJsonUtil.getJsonToBean(strlogModel, TransactionRecorkResultDto.class);
-            return dto;
+            log.info("getTransactionRecord==返回===" + strlogModel);
+            if (StringUtils.isNotEmpty(strlogModel)) {
+                TransactionRecorkResultDto dto = FastJsonUtil.getJsonToBean(strlogModel, TransactionRecorkResultDto.class);
+                return dto;
+            }
+        }catch (Exception ex)
+        {
+            log.error(ex.getMessage());
+            ex.printStackTrace();
         }
         return null;
     }
 
     //获取区块之间的日志
     public static ChainResultDto getAccountBalance(String contractAddress,String address) {
+        try{
         String url = String.format("https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress=%s&address=%s&tag=latest&apikey=%s", contractAddress,address, APIKEY);
         String strBlockModel = HttpClientHelper.get(url);
         log.info("getAccountBalance==返回==="+strBlockModel);
@@ -79,10 +106,16 @@ public class BlockChainUtil {
             ChainResultDto dto = FastJsonUtil.getJsonToBean(strBlockModel, ChainResultDto.class);
             return dto;
         }
+    }catch (Exception ex)
+    {
+        log.error(ex.getMessage());
+        ex.printStackTrace();
+    }
         return null;
     }
 
     public static ChainResultDto getContractBalance(String contractAddress) {
+        try{
         String url = String.format("https://api.bscscan.com/api?module=stats&action=tokenCsupply&contractaddress=%s&apikey=%s", contractAddress, APIKEY);
         String strBlockModel = HttpClientHelper.get(url);
         log.info("getAccountBalance==返回==="+strBlockModel);
@@ -90,6 +123,11 @@ public class BlockChainUtil {
             ChainResultDto dto = FastJsonUtil.getJsonToBean(strBlockModel, ChainResultDto.class);
             return dto;
         }
+    }catch (Exception ex)
+    {
+        log.error(ex.getMessage());
+        ex.printStackTrace();
+    }
         return null;
     }
 

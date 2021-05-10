@@ -32,7 +32,7 @@ public class DateUtils {
     public static final String YYYY_MM_DD = "yyyy-MM-dd";
     public static final String MM_DD_HH_MM_SS = "MM-dd HH:mm:ss";
 
-    public static Date parseAuto(String source) {
+    public static Date parseAuto(String source, int i) {
         SimpleDateFormat datetimeFormat = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
         SimpleDateFormat dateFormat = new SimpleDateFormat(YYYY_MM_DD);
         SimpleDateFormat dfsFull = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -1440,8 +1440,8 @@ public class DateUtils {
      * 舍去时间搓后3位
      * @return
      */
-    public static int convertDateTamsp(long time){
-        int times=(int) (time/1000);
+    public static long convertDateTamsp(long time){
+        long times= time/1000;
         return times;
     }
 

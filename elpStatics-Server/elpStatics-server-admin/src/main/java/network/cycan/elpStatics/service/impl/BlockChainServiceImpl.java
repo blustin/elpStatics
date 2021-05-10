@@ -37,13 +37,14 @@ public class BlockChainServiceImpl implements IBlockChainService {
     public void saveTodayBlockData(Date dateTime, String chainAddress, String userType) {
         //获取当前保存的区块数
         Long fromBlockNo = iUserBalanceService.getMaxBlockNo(userType);
-        if (fromBlockNo < 1) {
+        if (fromBlockNo < 50000) {
             fromBlockNo = 0L;
         }
-        long timestamp = dateTime.getTime() / 1000;
+        Long timestamp = dateTime.getTime() / 1000;
         //获取截止当前时间点的公链的区  块数，如果当前区块数大于当前的保持的区块数则不执行
         ChainResultDto chainResultDto = BlockChainUtil.getBlocknoByTime(timestamp);
         if (chainResultDto != null && BlockChainUtil.checkStatus(chainResultDto.getStatus())) {
+
             if (Long.parseLong(chainResultDto.getResult()) > fromBlockNo) {
                 Long targetBlockNo = Long.parseLong(chainResultDto.getResult());
                 HashMap<String, Long> userAddress = new HashMap<String, Long>();

@@ -21,7 +21,7 @@
             <charset>utf8</charset>
         </encoder>
     </appender>
-    <logger name="com.newdream.artshowadmin" level="DEBUG"/>
+    <logger name="network.cycan.elpStatics" level="INFO"/>
     <root level="INFO">
         <appender-ref ref="rollingFile"/>
         <appender-ref ref="CONSOLE"/>

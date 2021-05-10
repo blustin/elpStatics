@@ -53,7 +53,7 @@ public class TransactionRecorkServiceImpl extends ServiceImpl<TransactionRecorkM
             queryWrapper.eq("fromUserAddress",dto.getFromAddress());
         }
         if(StringUtils.isNotEmpty(dto.getToAddress())) {
-            queryWrapper.eq("toUserAddress",dto.getFromAddress());
+            queryWrapper.eq("toUserAddress",dto.getToAddress());
         }
         queryWrapper.orderByDesc("transactionTime");
 

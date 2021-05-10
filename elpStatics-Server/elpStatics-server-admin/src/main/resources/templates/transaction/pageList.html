@@ -39,7 +39,7 @@
             <button type="submit" class="btn btn-success" id="searchBtn">搜索</button>
         </form>
     </div>
-    <table class="table table-border table-bordered table-hover table-bg table-sort " style="margin-top: 10px;">
+    <table class="table table-border table-bordered table-hover table-bg table-sort " style="margin: 20px;">
         <tr class="text-c">
             <th>id</th>
             <th>交易时间</th>
@@ -60,7 +60,12 @@
         </tr>
     </#list>
     </table>
-    <div class="page_con pagination" id="page" <#if (pageList.total)?? && (pageList.total) == 0>style="display: none;"</#if> > </div>
+    <div class="page-wrapper">
+        <div class="page_con pagination" id="page" <#if (pageList.total)?? && (pageList.total) == 0>style="display: none;"</#if> > </div>
+        <div class="dataTables_info" id="editable_info" style="float: right;" >总共 ${(pageList.total)!'0'} 条</div>
+    </div>
+
+
 </div>
 
 
@@ -77,6 +82,8 @@
             totalCount: totalCount,
             pageSize: pageSize,
             currentPage: pageNo - 1,
+            seriesShowCount: 6,
+            bothSidesShowCount : 1,
             clickEvent: function (page_index) {
                 $("#pageNo").val(page_index + 1);
                 $("#form").submit();
@@ -87,6 +94,7 @@
             forceParse: false,
             autoclose: true
         });
+
     });
 </script>
 </body>

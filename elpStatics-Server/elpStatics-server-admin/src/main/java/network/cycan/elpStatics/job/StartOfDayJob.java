@@ -25,9 +25,17 @@ public class StartOfDayJob extends QuartzJobBean {
     protected void executeInternal(JobExecutionContext jobExecutionContext)
             throws JobExecutionException {
         log.info("定时任务启动====="+DateUtils.getNowTime(DateUtils.YYYY_MM_DD_HH_MM_SS));
-        iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.ELP_CONTRACT_ADDREES, ChainContractType.ELP.getType());
-        iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.LP_TOKEN_ADDRESS, ChainContractType.LP.getType());
-        iStsDailyContractService.dailyStatic(DateUtils.today());
+        try
+        {
+
+            iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.ELP_CONTRACT_ADDREES, ChainContractType.ELP.getType());
+            iBlockChainService.saveTodayBlockData(DateUtils.today(), BlockChainUtil.LP_TOKEN_ADDRESS, ChainContractType.LP.getType());
+            iStsDailyContractService.dailyStatic(DateUtils.today());
+        }catch (Exception ex){
+            ex.printStackTrace();
+            log.error(ex.getMessage());
+        }
+
         log.info("定时任务结束====="+DateUtils.getNowTime(DateUtils.YYYY_MM_DD_HH_MM_SS));
 
     }
