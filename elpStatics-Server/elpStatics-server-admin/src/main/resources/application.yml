@@ -13,9 +13,9 @@ spring:
       maxRequestSize: 100MB
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    username: cycan_elpstatics2020
-    password: cycan_elpstatics@2020!123
-    url: jdbc:mysql://rm-3nszvdf1374v2c0tr.mysql.rds.aliyuncs.com:3306/cycan_elpstatics?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+    username: root
+    password: abc@123
+    url: jdbc:mysql://localhost:3306/cycan?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&useSSL=false&allowMultiQueries=true&serverTimezone=UTC
   main:
     allow-bean-definition-overriding: true
 

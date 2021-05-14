@@ -22,7 +22,7 @@ public class QuartzConfig {
         Trigger trigger =TriggerBuilder.newTrigger().forJob(jobDetail()).withIdentity("start_of_day", "start_of_day")
                 .startNow()
                 // 每天0点执行
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?"))
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 20 * * ?"))
                 .build();
         return trigger;
     }

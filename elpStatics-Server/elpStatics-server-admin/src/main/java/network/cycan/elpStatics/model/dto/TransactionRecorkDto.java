@@ -32,7 +32,7 @@ public class TransactionRecorkDto  implements Serializable {
     }
     public Long getBlockNumberTEN()
     {
-        return Long.parseLong(blockNumber.substring(2),16);
+        return Long.parseLong(blockNumber);
     }
     public void setBlockNumber(String blockNumber) {
         this.blockNumber = blockNumber;

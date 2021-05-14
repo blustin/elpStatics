@@ -45,7 +45,7 @@ public class UserBalanceController {
     @RequestMapping("/refreshMovingBalance")
     public  String refreshMovingBalance(HttpServletRequest request)
     {
-        iBlockChainService.saveMovingBalance(DateUtils.today());
+         iBlockChainService.saveMovingBalance(DateUtils.today());
         return  "ok";
     }
 

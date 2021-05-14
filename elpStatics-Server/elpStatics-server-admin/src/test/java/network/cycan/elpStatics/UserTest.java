@@ -48,9 +48,10 @@ public class UserTest {
         log.info("定时任务启动====="+DateUtils.getNowTime(DateUtils.YYYY_MM_DD_HH_MM_SS));
         try
         {
-            iBlockChainService.saveTodayBlockData(DateUtils.today(), HttpBlockChainUtil.ELP_CONTRACT_ADDREES, ChainContractType.ELP.getType());
-            iBlockChainService.saveTodayBlockData(DateUtils.today(), HttpBlockChainUtil.LP_TOKEN_ADDRESS, ChainContractType.LP.getType());
-            iStsDailyContractService.dailyStatic(DateUtils.today());
+           // iBlockChainService.saveTodayBlockData(DateUtils.today(), HttpBlockChainUtil.ELP_CONTRACT_ADDREES, ChainContractType.ELP.getType());
+//            iBlockChainService.saveTodayBlockData(DateUtils.today(), HttpBlockChainUtil.LP_TOKEN_ADDRESS, ChainContractType.LP.getType());
+            iBlockChainService.saveMovingBalance(DateUtils.today());
+//            iStsDailyContractService.dailyStatic(DateUtils.today());
         }catch (Exception ex){
             ex.printStackTrace();
             log.error(ex.getMessage());

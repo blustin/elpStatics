@@ -37,6 +37,12 @@
                 <input type="text" class="input-sm form-control" name="endDate" value="${(dto.endDate)!''}" />
             </div>
             <button type="submit" class="btn btn-success" id="searchBtn">搜索</button>
+            <#if dto.tranactionType="1">
+            <button type="button" class="btn btn-success" onclick="refreshElpRecord()" id="refreshBtn">刷新交易</button>
+            <#elseif  dto.tranactionType="2">
+            <button type="button" class="btn btn-success" onclick="refreshLpRecord()" id="refreshBtn">刷新交易</button>
+            </#if>
+
         </form>
     </div>
     <table class="table table-border table-bordered table-hover table-bg table-sort " style="margin: 20px;">
@@ -73,7 +79,16 @@
 <script src="${tx.getContextPath()}/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${tx.getContextPath()}/js/pagination/page.js"></script>
 <script type="text/javascript">
-
+    function refreshElpRecord() {
+        var movingUrl='${tx.getContextPath()}/transaction/refresElpRecord';
+        $.ajax({url:movingUrl});
+        alert("请求已经发起，请稍后刷新");
+    }
+    function refreshLpRecord() {
+        var movingUrl='${tx.getContextPath()}/transaction/refresLpRecord';
+        $.ajax({url:movingUrl});
+        alert("请求已经发起，请稍后刷新");
+    }
     $(function () {
         totalCount = parseInt($.trim($("#totalCount").val()));
         pageSize = parseInt($.trim($("#pageSize").val()));

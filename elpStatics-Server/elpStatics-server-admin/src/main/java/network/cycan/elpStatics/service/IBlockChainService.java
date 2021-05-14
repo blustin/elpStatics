@@ -5,11 +5,11 @@ import java.util.Date;
 
 public interface IBlockChainService {
 
-      void saveTodayBlockData(Date dateTime,String chainAddress,String userType);
+      boolean saveTodayBlockData(Date dateTime,String chainAddress,String userType);
 
       BigDecimal getContractTotalBalance(String contractAddress);
 
       BigDecimal getMovingBalance(String contractAddress,String address);
 
-      void  saveMovingBalance( Date date);
+      boolean  saveMovingBalance( Date date);
 }
