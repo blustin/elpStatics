@@ -25,28 +25,38 @@
                <input type="text" class="input-sm form-control" name="batchNo" value="${(dto.batchNo)!''}" />
 
             <button type="submit" class="btn btn-success" id="searchBtn">搜索</button>
+            <div class="text-right">
+            <button type="button" class="btn btn-success" id="btnAdd">添加</button>
 
-
+            </div>
         </form>
     </div>
     <table class="table table-border table-bordered table-hover table-bg table-sort " style="margin: 20px;">
         <tr class="text-c">
             <th>id</th>
-            <th>交易时间</th>
-            <th>发起用户</th>
-            <th>接收用户</th>
-            <th>交易金额</th>
+            <th>批次号</th>
+            <th>项目名称</th>
+            <th>备注</th>
+            <th>更新者</th>
             <th>创建时间</th>
+            <th>更新时间</th>
+            <th>操作</th>
 
         </tr>
         <#list pageList.records as item>
         <tr>
+
             <td>${item.id?c}</td>
-            <td>${(item.transactionTime?string("yyyy-MM-dd HH:mm:ss"))!}</td>
-            <td>${item.fromUserAddress!'-'}</td>
-            <td>${item.toUserAddress!'-'}</td>
-            <td>${item.transactionAmount!'-'}</td>
+            <td> ${item.projectName!'-'}</td>
+            <td>${item.projectBatchNo!'-'}</td>
+            <td>${item.remark!'-'}</td>
+            <td>${item.updateUserName!'-'}</td>
             <td>${(item.createTime?string("yyyy-MM-dd HH:mm:ss"))!}</td>
+            <td>${(item.updateTime?string("yyyy-MM-dd HH:mm:ss"))!}</td>
+            <td><button type="button" class="btn btn-success" id="btnView">查看</button>
+            <button type="button" class="btn btn-success" id="btnEdit">编辑</button>
+            <button type="button" class="btn btn-success" id="btnDelete">删除</button>
+            </td>
         </tr>
     </#list>
     </table>
@@ -80,6 +90,9 @@
             }
         });
     });
+    function editProject(projectId) {
+
+    }
 </script>
 </body>
 
