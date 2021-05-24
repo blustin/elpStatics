@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @Controller
 @RequestMapping("/project")
-public class ProjectController {
+public class ProjectController extends BaseController {
 
     @Autowired
     private IAirProjectService iAirProjectService;

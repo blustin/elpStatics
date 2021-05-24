@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @Controller
 @RequestMapping("/transaction")
-public class TransactionRecorkController {
+public class TransactionRecorkController extends BaseController {
 
     @Autowired
     private IBlockChainService iBlockChainService;

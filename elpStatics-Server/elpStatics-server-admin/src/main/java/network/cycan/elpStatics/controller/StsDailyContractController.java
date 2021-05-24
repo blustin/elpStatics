@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 @RequestMapping("/daily")
-public class StsDailyContractController {
+public class StsDailyContractController extends BaseController {
     @Autowired
    private IStsDailyContractService iStsDailyContractService;
 

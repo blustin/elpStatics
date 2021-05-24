@@ -21,7 +21,7 @@ import java.util.List;
 
 @Slf4j
 @Controller
-public class ProjectAddressController {
+public class ProjectAddressController extends BaseController {
 
     @Autowired
     private IAirProjectAddressService projectAddressService;

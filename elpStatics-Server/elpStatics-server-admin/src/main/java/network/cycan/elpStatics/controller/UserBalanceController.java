@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
  */
 @Controller
 @RequestMapping("/user")
-public class UserBalanceController {
+public class UserBalanceController  extends BaseController{
     @Autowired
     private IUserBalanceService iUserBalanceService;
     @Autowired

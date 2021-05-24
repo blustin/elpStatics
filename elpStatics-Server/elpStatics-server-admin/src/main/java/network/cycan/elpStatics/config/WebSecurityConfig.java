@@ -6,8 +6,10 @@ import network.cycan.elpStatics.model.entity.SysUser;
 import network.cycan.elpStatics.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,18 +25,33 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
+@Configuration
+
+@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Override
     protected void configure(HttpSecurity http) throws Exception { //配置策略
         http.csrf().disable();
-        http.authorizeRequests().
-                antMatchers("/static/**").permitAll().anyRequest().authenticated().
-                and().formLogin().loginPage("/login").permitAll().successHandler(loginSuccessHandler()).
+
+        http.authorizeRequests()
+        .antMatchers("/css/**", "/js/**","/images/**", "/webjars/**", "**/favicon.ico")
+                .permitAll().anyRequest().authenticated()
+                .and().formLogin()
+                .usernameParameter("userName")
+                .passwordParameter("userPwd")
+                .loginPage("/login").permitAll()
+                .defaultSuccessUrl("/")
+                .successHandler(loginSuccessHandler()).
                 and().logout().permitAll().invalidateHttpSession(true).
-                deleteCookies("JSESSIONID").logoutSuccessHandler(logoutSuccessHandler()).
-                and().sessionManagement().maximumSessions(10).expiredUrl("/login");
+                deleteCookies("JSESSIONID").logoutSuccessHandler(logoutSuccessHandler())
+                .and().sessionManagement().maximumSessions(10).expiredUrl("/login")
+
+        ;
+        http.headers().frameOptions().sameOrigin();
+
+
     }
 
     @Autowired
@@ -83,9 +100,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             private ISysUserService iSysUserService;
 
             @Override
-            public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-                SysUser user = iSysUserService.findByUsername(s);
-                if (user == null) throw new UsernameNotFoundException("Username " + s + " not found");
+            public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+                SysUser user = iSysUserService.findByUsername(userName);
+                if (user == null) throw new UsernameNotFoundException("Username " +userName+ " not found");
                 return new SecurityUser(user);
             }
         };
