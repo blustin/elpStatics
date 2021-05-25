@@ -1,5 +1,8 @@
 package network.cycan.elpStatics.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import network.cycan.elpStatics.model.dto.SysUserDto;
+import network.cycan.elpStatics.model.dto.UserDto;
 import network.cycan.elpStatics.model.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -14,4 +17,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ISysUserService extends IService<SysUser> {
 
     SysUser findByUsername(String userName);
+
+    IPage<SysUser> pageByCondition(SysUserDto dto);
 }

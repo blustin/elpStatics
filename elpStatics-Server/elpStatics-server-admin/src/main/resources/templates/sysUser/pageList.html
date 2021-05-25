@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<header>
+    <#include "/includes/header.html" />
+    <link href="${tx.getContextPath()}/css/plugins/dataTables/dataTables.bootstrap.css?v=1.1" rel="stylesheet">
+</header>
+<body>
+<nav class="breadcrumb">
+    <div class="text-left float"></div>
+    <div class="text-left " style="line-height: 30px;margin: 10px;">
+    <i class="Hui-iconfont">&#xe67f;</i>首页 <span class="c-gray en">&gt;</span>工作台<span class="c-gray en">&gt;</span>系统用户管理
+
+ 
+    <a class="btn btn-success radius r mr-20 "  style="line-height:1.6em;margin-top:3px;float: right" href="javascript:location.replace(location.href);" title="刷新">刷新</a></nav>
+    </div>
+
+<div class="pd-20" style="margin: 20px;">
+    <div class="text-center">
+        <form action="${tx.getContextPath()}/sysUser/pageList" method="post" id="form" class="form-inline">
+            <input type="hidden" value="${(pageList.total)!'0'}" name="totalCount" id="totalCount"/>
+            <input type="hidden" value="${(pageList.size)!'10'}" name="pageSize" id="pageSize"/>
+            <input type="hidden" value="${(dto.pageNo)!'1'}" name="pageNo" id="pageNo"/>
+            <label class="font-noraml">用户名:</label>
+            <input type="text" class="input-sm form-control" name="userName" value="${(dto.userName)!''}" />
+            <button type="submit" class="btn btn-success" id="searchBtn">搜索</button>
+            <button type="button" class="btn btn-success" id="btnAdd">新增</button>
+        </form>
+    </div>
+    <table class="table table-border table-bordered table-hover table-bg table-sort " style="margin-top: 10px;">
+        <tr class="text-c">
+            <th>id</th>
+            <th>用户登录名</th>
+            <th>昵称</th>
+            <th>备注</th>
+            <th>创建时间</th>
+            <th>更新时间</th>
+            <th>创建用户</th>
+            <th>更新用户</th>
+            <th>操作</th>
+        </tr>
+        <#list pageList.records as item>
+        <tr>
+            <td>${item.id}</td>
+            <td>${item.userName!'-'}</td>
+            <td>${item.nickName!'-'}</td>
+            <td>${item.remark!'-'}</td>
+            <td>${(item.createTime?string("yyyy-MM-dd HH:mm:ss"))!}</td>
+            <td>${(item.updateTime?string("yyyy-MM-dd HH:mm:ss"))!}</td>
+            <td>${item.createUser!'-'}</td>
+            <td>${item.updateUser!'-'}</td>
+            <td>
+                <button type="button" class="btn btn-success" id="btnEdit">编辑</button>
+                <button type="button" class="btn btn-success" id="btnDelete">删除</button>
+            </td>
+        </tr>
+    </#list>
+    </table>
+    <div class="page-wrapper">
+        <div class="page_con pagination" id="page" <#if (pageList.total)?? && (pageList.total) == 0>style="display: none;"</#if> > </div>
+<div class="dataTables_info" id="editable_info" style="float: right;" >总共 ${(pageList.total)!'0'} 条</div>
+</div>
+</div>
+
+
+<#include "/includes/footer.html" />
+<script type="text/javascript" src="${tx.getContextPath()}/js/pagination/page.js"></script>
+<script src="${tx.getContextPath()}/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<script type="text/javascript">
+    function refreshMovingBalance() {
+        var movingUrl='${tx.getContextPath()}/user/refreshMovingBalance';
+        $.ajax({url:movingUrl});
+        alert("流动性挖矿刷新请求已经发，请稍后再刷新，大约1个小时");
+    }
+    $(function () {
+        totalCount = parseInt($.trim($("#totalCount").val()));
+        pageSize = parseInt($.trim($("#pageSize").val()));
+        pageNo = parseInt($.trim($("#pageNo").val()));
+        $("#page").pagination({
+            totalCount: totalCount,
+            pageSize: pageSize,
+            currentPage: pageNo - 1,
+            clickEvent: function (page_index) {
+                $("#pageNo").val(page_index + 1);
+                $("#form").submit();
+            }
+        });
+        $('.input-daterange').datepicker({
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true
+        });
+
+    });
+</script>
+</body>
+
+</html>
