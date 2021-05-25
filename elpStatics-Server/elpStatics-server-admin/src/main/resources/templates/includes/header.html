@@ -25,6 +25,6 @@
         function refreshJobRecord() {
             var movingUrl='${tx.getContextPath()}/transaction/refreshJobRecord';
             $.ajax({url:movingUrl});
-            alert("请求已经发起，请稍后刷新");
+            parent.layer.msg("请求已经发起，请稍后刷新");
         }
     </script>

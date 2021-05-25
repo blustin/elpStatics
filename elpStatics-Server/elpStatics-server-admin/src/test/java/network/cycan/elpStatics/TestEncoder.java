@@ -36,7 +36,7 @@ public class TestEncoder {
         sysUser.setUpdateTime(LocalDateTime.now());
         sysUser.setUpdateUser("admin");
         sysUser.setCreateUser("admin");
-        iSysUserService.save(sysUser);
+        //iSysUserService.save(sysUser);
         System.out.println(enPassword);
     }
 

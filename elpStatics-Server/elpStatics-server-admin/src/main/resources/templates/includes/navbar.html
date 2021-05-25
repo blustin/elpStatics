@@ -1,29 +1,41 @@
 <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="nav-close"><i class="fa fa-times-circle"></i>
     </div>
+
+    <#assign user=Session.SPRING_SECURITY_CONTEXT.authentication.principal/>
     <div class="sidebar-collapse">
         <ul class="nav" id="side-menu">
             <li class="nav-header">
                 <div class="dropdown profile-element">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear">
-                               <span class="block m-t-xs"><strong class="font-bold">cycan</strong></span>
-                                <span class="text-muted text-xs block">cycan<b class="caret"></b></span>
+                               <span class="block m-t-xs"><strong class="font-bold">${user.nickName}</strong></span>
+                                <span class="text-muted text-xs block">${user.userName}<b class="caret"></b></span>
                                 </span>
-                        <button type="button" class="btn btn-success" onclick="refreshJobRecord()" id="refreshBtn">执行任务</button>
                     </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li>
+                            <a  class="btn btn-primary" onclick="refreshJobRecord()"  href="javascript:void(0)">执行任务</a>
+                        </li>
+                        <li>
+                            <a data-toggle="modal" class="btn btn-primary" href="#modal-formPwd">修改密码</a>
 
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="/logout">安全退出</a>
+                        </li>
+                    </ul>
                 </div>
 
             </li>
+
             <li>
                 <a href="#">
                     <i class="fa fa-home"></i>
                     <span class="nav-label">工作台</span>
                     <span class="fa arrow"></span>
                 </a>
-
-                <ul class="nav nav-second-level collapse in" aria-expanded="true" >
+                <ul class="nav nav-second-level collapse in" aria-expanded="true">
                     <li>
                         <a class="J_menuItem" href="/user/pageList?userType=1" data-index="0">ELP余额明细</a>
                     </li>
@@ -54,3 +66,82 @@
         </ul>
     </div>
 </nav>
+
+
+    <div id="modal-formPwd" class="modal fade" aria-hidden="true">
+        <div class="modal-dialog" style="width: 300px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row text-center">
+                        <h3 class="m-t-none m-b">修改密码</h3>
+                    </div>
+                    <div class="row">
+
+                            <form role="form" id="formPwd">
+                                <input type="hidden" id="hUserId" value="${user.id}">
+                                <div class="form-group">
+                                    <label>账号：</label>
+                                    <label >${user.userName}</label>
+                                </div>
+                                <div class="form-group">
+                                    <label>原密码：</label>
+                                    <input type="password" id="pOldPwd" placeholder="请输入旧密码" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>新密码：</label>
+                                    <input type="password" id="pnewPwd" placeholder="请输入新密码" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>确认密码：</label>
+                                    <input type="password" id="pcomfirmPwd" placeholder="请输入新密码" class="form-control">
+                                </div>
+                                <div class="text-center">
+                                    <label id="errorMsg"></label>
+                                    <button type="button" onclick="doEditPwd()" class="btn btn-primary ">
+                                        提交更改
+                                    </button>
+                                    <button type="button" class="btn btn-default " data-dismiss="modal">关闭
+                                    </button>
+                                </div>
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+       function doEditPwd(){
+           var userid=$("#hUserId").val();
+           var pOldPwd=$("#pOldPwd").val();
+           var pnewPwd=$("#pnewPwd").val();
+           var pcomfirmPwd=$("#pcomfirmPwd").val();
+           if(pnewPwd!=pcomfirmPwd) {
+               parent.layer.msg("确认密码不一致！");
+                return ;
+           }
+           var pwdData={userId:userid,oldPwd:pOldPwd,newPwd:pnewPwd};
+           var url=basePath+"/sysUser/updateUserPwd";
+           $.ajax({
+               type: 'POST',
+               url:url,
+               dataType:'json',
+               contentType:"application/json",
+               async: false,
+               data:JSON.stringify(pwdData),
+               success:function(data){
+                   if(data.success==false) {
+                       parent.layer.msg(data.msg);
+                       return;
+                   }
+                   parent.layer.msg("密码更新成功！");
+                   $("#pOldPwd").val("");
+                   $("#pnewPwd").val("");
+                   $("#pcomfirmPwd").val("");
+                   $("#modal-formPwd").modal('hide');
+               }
+           });
+
+        }
+    </script>
