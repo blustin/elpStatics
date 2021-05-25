@@ -10,7 +10,7 @@
     <div class="text-left " style="line-height: 30px;margin: 10px;">
     <i class="Hui-iconfont">&#xe67f;</i>首页 <span class="c-gray en">&gt;</span>工作台<span class="c-gray en">&gt;</span>系统用户管理
 
- 
+
     <a class="btn btn-success radius r mr-20 "  style="line-height:1.6em;margin-top:3px;float: right" href="javascript:location.replace(location.href);" title="刷新">刷新</a></nav>
     </div>
 
@@ -23,7 +23,7 @@
             <label class="font-noraml">用户名:</label>
             <input type="text" class="input-sm form-control" name="userName" value="${(dto.userName)!''}" />
             <button type="submit" class="btn btn-success" id="searchBtn">搜索</button>
-            <button type="button" class="btn btn-success" id="btnAdd">新增</button>
+            <button type="button" class="btn btn-success" id="btnAdd" onclick="add()">新增</button>
         </form>
     </div>
     <table class="table table-border table-bordered table-hover table-bg table-sort " style="margin-top: 10px;">
@@ -49,8 +49,8 @@
             <td>${item.createUser!'-'}</td>
             <td>${item.updateUser!'-'}</td>
             <td>
-                <button type="button" class="btn btn-success" id="btnEdit">编辑</button>
-                <button type="button" class="btn btn-success" id="btnDelete">删除</button>
+                <button type="button" class="btn btn-success" onclick="edit('${item.id}','${item.userName!'-'}','${item.nickName!'-'}','${item.remark!'-'}')" id="btnEdit">编辑</button>
+                <button type="button" class="btn btn-success" onclick="deleteUser('${item.id}') " id="btnDelete">删除</button>
             </td>
         </tr>
     </#list>
@@ -62,14 +62,103 @@
 </div>
 
 
+<div id="modal-formUser" class="modal fade" aria-hidden="true">
+    <div class="modal-dialog" style="width: 300px;">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row text-center">
+                    <h3 class="m-t-none m-b">添加用户</h3>
+                </div>
+                <div class="row">
+                    <form role="form" id="formUser">
+                        <input type="hidden" id="puserId" value="">
+                        <div class="form-group">
+                            <label>用户：</label>
+                            <input type="text" id="pUserName"  placeholder="请输入用户" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>密码：</label>
+                            <input type="password" id="pUserPwd" placeholder="请输入密码" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>昵称：</label>
+                            <input type="text" id="pNickName" placeholder="请输入昵称" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>备注：</label>
+                            <input type="text" id="pRemark" placeholder="请输入备注" class="form-control">
+                        </div>
+                        <div class="text-center">
+                            <button type="button" onclick="save()" class="btn btn-primary ">
+                                保存
+                            </button>
+                            <button type="button" class="btn btn-default " data-dismiss="modal">关闭
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <#include "/includes/footer.html" />
 <script type="text/javascript" src="${tx.getContextPath()}/js/pagination/page.js"></script>
 <script src="${tx.getContextPath()}/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script type="text/javascript">
-    function refreshMovingBalance() {
-        var movingUrl='${tx.getContextPath()}/user/refreshMovingBalance';
-        $.ajax({url:movingUrl});
-        alert("流动性挖矿刷新请求已经发，请稍后再刷新，大约1个小时");
+    function save() {
+        var userData={id:$("#puserId").val(),userName:$("#pUserName").val(),userPwd:$("#pUserPwd").val(),
+            nickName:$("#pNickName").val(),remark:$("#pRemark").val()};
+        var url=basePath+"/sysUser/edit";
+        $.ajax({
+            type: 'POST',
+            url:url,
+            dataType:'json',
+            contentType:"application/json",
+            async: false,
+            data:JSON.stringify(userData),
+            success:function(data){
+                if(data.success==false) {
+                    parent.layer.msg(data.msg);
+                    return;
+                }
+                parent.layer.msg("用户保存成功！");
+                $("#modal-formUser").modal('hide');
+                location.reload();
+            }
+        });
+    }
+    function add() {
+        $("#formUser")[0].reset();
+        $("#modal-formUser").modal('show');
+    }
+    function edit(userId,userName,nickName,remark) {
+        $("#formUser")[0].reset();
+        $("#puserId").val(userId);
+        $("#pUserName").val(userName);
+        $("#pNickName").val(nickName);
+        $("#pRemark").val(remark);
+        $("#modal-formUser").modal('show');
+    }
+    function deleteUser(userId){
+        var url=basePath+"/sysUser/deleteById?id="+userId;
+        $.ajax({
+            url:url,
+            dataType:'json',
+            contentType:"application/json",
+            async: false,
+            success:function(data){
+                if(data.success==false) {
+                    parent.layer.msg(data.msg);
+                    return;
+                }
+                parent.layer.msg("删除数据！");
+                $("#modal-formUser").modal('hide');
+                location.reload();
+            }
+        });
     }
     $(function () {
         totalCount = parseInt($.trim($("#totalCount").val()));
@@ -84,12 +173,6 @@
                 $("#form").submit();
             }
         });
-        $('.input-daterange').datepicker({
-            keyboardNavigation: false,
-            forceParse: false,
-            autoclose: true
-        });
-
     });
 </script>
 </body>

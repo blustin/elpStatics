@@ -29,9 +29,9 @@ public class UserController extends BaseController {
 
     @RequestMapping("/pageList")
     public String list(HttpServletRequest request, Model model, SysUserDto dto) {
-        IPage<SysUser> pageList =  iSysUserService.pageByCondition(dto);
-        model.addAttribute("pageList",pageList);
-        model.addAttribute("dto",dto);
+        IPage<SysUser> pageList = iSysUserService.pageByCondition(dto);
+        model.addAttribute("pageList", pageList);
+        model.addAttribute("dto", dto);
         return "sysUser/pageList";
     }
 
@@ -39,10 +39,10 @@ public class UserController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/updateUserPwd", method = RequestMethod.POST)
     public ApiResponse updateUserPwd(
-            HttpServletRequest request, Model model,@RequestBody Map<String, String> map) {
-        String id=map.get("userId");
-        String oldPwd=map.get("oldPwd");
-        String newPwd=map.get("newPwd");
+            HttpServletRequest request, Model model, @RequestBody Map<String, String> map) {
+        String id = map.get("userId");
+        String oldPwd = map.get("oldPwd");
+        String newPwd = map.get("newPwd");
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(4);
         SysUser user = iSysUserService.getById(id);
         if (user == null) {
@@ -56,29 +56,30 @@ public class UserController extends BaseController {
         user.setUpdateTime(LocalDateTime.now());
         user.setUpdateUser(getUser().getUpdateUser());
         iSysUserService.updateById(user);
-        return  ApiResponse.builder().success(true).build();
+        return ApiResponse.builder().success(true).build();
     }
 
+    @ResponseBody
     @RequestMapping("/edit")
-    public ApiResponse edit(HttpServletRequest request, Model model, SysUser user)
-    {
-        SysUser sysUser=null;
+    public ApiResponse edit(HttpServletRequest request, Model model, @RequestBody SysUser user) {
+        SysUser sysUser = null;
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(4);
-        if(user.getId()>0){
-            sysUser=   iSysUserService.getById(sysUser.getId());
+        if (user.getId() != null && user.getId() > 0) {
+            sysUser = iSysUserService.getById(user.getId());
             sysUser.setUpdateUser(getUser().getUserName());
             sysUser.setUpdateTime(LocalDateTime.now());
-            sysUser.setUserPwd(user.getUserPwd());
             sysUser.setRemark(user.getRemark());
-            sysUser.setNickName(sysUser.getNickName());
-            if(StringUtils.isNotEmpty(user.getUserPwd()))
-            {
+            sysUser.setNickName(user.getNickName());
+            if (StringUtils.isNotEmpty(user.getUserPwd())) {
                 sysUser.setUserPwd(encoder.encode(user.getUserPwd()));
             }
             iSysUserService.updateById(sysUser);
-        }else
-        {
-            sysUser=new SysUser();
+        } else {
+            sysUser = new SysUser();
+            SysUser user1 = iSysUserService.findByUsername(sysUser.getUserName());
+            if (user1 != null) {
+                return ApiResponse.builder().success(false).msg("用户名不能重复").build();
+            }
             sysUser.setUserId(UUIDUtils.randomUUID());
             sysUser.setNickName(user.getNickName());
             sysUser.setRemark(user.getRemark());
@@ -93,15 +94,15 @@ public class UserController extends BaseController {
         return ApiResponse.builder().success(true).build();
 
     }
+
+    @ResponseBody
     @RequestMapping("/deleteById")
-    public ApiResponse deleteById(HttpServletRequest request, Model model,@RequestParam (value = "id") String id)
-    {
-        if(StringUtils.isEmpty(id)) {
+    public ApiResponse deleteById(HttpServletRequest request, Model model, @RequestParam(value = "id") String id) {
+        if (StringUtils.isEmpty(id)) {
             return ApiResponse.builder().success(false).msg("参数不合法").build();
         }
-        boolean flag=  iSysUserService.removeById(id);
-        if(!flag)
-        {
+        boolean flag = iSysUserService.removeById(id);
+        if (!flag) {
             return ApiResponse.builder().success(false).msg("数据不存在！").build();
         }
         return ApiResponse.builder().success(true).build();

@@ -15,7 +15,7 @@
     <a class="btn btn-success radius r mr-20 "  style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新">刷新</a></nav>
 <div class="pd-20">
     <div class="text-center">
-        <form action="${tx.getContextPath()}/transaction/pageList" method="post" id="form" class="form-inline">
+        <form action="${tx.getContextPath()}/project/pageList" method="post" id="form" class="form-inline">
             <input type="hidden" value="${(pageList.total)!'0'}" name="totalCount" id="totalCount"/>
             <input type="hidden" value="${(pageList.size)!'10'}" name="pageSize" id="pageSize"/>
             <input type="hidden" value="${(dto.pageNo)!'1'}" name="pageNo" id="pageNo"/>
@@ -26,7 +26,7 @@
 
             <button type="submit" class="btn btn-success" id="searchBtn">搜索</button>
             <div class="text-right">
-            <button type="button" class="btn btn-success" id="btnAdd">添加</button>
+            <button type="button" class="btn btn-success" id="btnAdd" onclick="add()">添加</button>
 
             </div>
         </form>
@@ -34,28 +34,26 @@
     <table class="table table-border table-bordered table-hover table-bg table-sort " style="margin: 20px;">
         <tr class="text-c">
             <th>id</th>
-            <th>批次号</th>
             <th>项目名称</th>
             <th>备注</th>
-            <th>更新者</th>
+            <th>创建用户</th>
+            <th>更新用户</th>
             <th>创建时间</th>
             <th>更新时间</th>
             <th>操作</th>
-
         </tr>
         <#list pageList.records as item>
         <tr>
-
             <td>${item.id?c}</td>
             <td> ${item.projectName!'-'}</td>
-            <td>${item.projectBatchNo!'-'}</td>
             <td>${item.remark!'-'}</td>
+            <td>${item.createUserName!'-'}</td>
             <td>${item.updateUserName!'-'}</td>
             <td>${(item.createTime?string("yyyy-MM-dd HH:mm:ss"))!}</td>
             <td>${(item.updateTime?string("yyyy-MM-dd HH:mm:ss"))!}</td>
-            <td><button type="button" class="btn btn-success" id="btnView">查看</button>
-            <button type="button" class="btn btn-success" id="btnEdit">编辑</button>
-            <button type="button" class="btn btn-success" id="btnDelete">删除</button>
+            <td><button type="button" class="btn btn-success"  id="btnView" onclick="viewPrject('${item.id}')">查看</button>
+            <button type="button" class="btn btn-success" id="btnEdit" onclick="edit('${item.id}','${item.projectName!'-'}','${item.remark!'-'}')">编辑</button>
+            <button type="button" class="btn btn-success"  onclick="deleteProject('${item.id}')" id="btnDelete">删除</button>
             </td>
         </tr>
     </#list>
@@ -64,16 +62,96 @@
         <div class="page_con pagination" id="page" <#if (pageList.total)?? && (pageList.total) == 0>style="display: none;"</#if> > </div>
         <div class="dataTables_info" id="editable_info" style="float: right;" >总共 ${(pageList.total)!'0'} 条</div>
     </div>
-
-
 </div>
-
+<div id="modal-formProject" class="modal fade" aria-hidden="true">
+    <div class="modal-dialog" style="width: 300px;">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row text-center">
+                    <h3 class="m-t-none m-b">添加项目</h3>
+                </div>
+                <div class="row">
+                    <form role="form" id="formProject">
+                        <input type="hidden" id="pProjectId" value="">
+                        <div class="form-group">
+                            <label>项目名称：</label>
+                            <input type="text" id="pProjectName"  placeholder="项目名称" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>备注：</label>
+                            <input type="text" id="pRemark"  placeholder="备注" class="form-control">
+                        </div>
+                        <div class="text-center">
+                            <button type="button" onclick="save()" class="btn btn-primary ">
+                                保存
+                            </button>
+                            <button type="button" class="btn btn-default " data-dismiss="modal">关闭
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <#include "/includes/footer.html" />
 <script src="${tx.getContextPath()}/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${tx.getContextPath()}/js/pagination/page.js"></script>
 <script type="text/javascript">
+    function viewPrject(projectId) {
 
+    }
+    function save() {
+        var projectData={id:$("#pProjectId").val(),projectName:$("#pProjectName").val(),remark:$("#pRemark").val()};
+        var url=basePath+"/project/edit";
+        $.ajax({
+            type: 'POST',
+            url:url,
+            dataType:'json',
+            contentType:"application/json",
+            async: false,
+            data:JSON.stringify(projectData),
+            success:function(data){
+                if(data.success==false) {
+                    parent.layer.msg(data.msg);
+                    return;
+                }
+                parent.layer.msg("项目保存成功！");
+                $("#modal-formUser").modal('hide');
+                location.reload();
+            }
+        });
+    }
+    function add() {
+        $("#formProject")[0].reset();
+        $("#modal-formProject").modal('show');
+    }
+    function edit(projectId,projectName,remark) {
+        $("#formProject")[0].reset();
+        $("#pProjectId").val(projectId);
+        $("#pProjectName").val(projectName);
+        $("#pRemark").val(remark);
+        $("#modal-formProject").modal('show');
+    }
+    function deleteProject(projectId){
+        var url=basePath+"/project/deleteById?id="+projectId;
+        $.ajax({
+            url:url,
+            dataType:'json',
+            contentType:"application/json",
+            async: false,
+            success:function(data){
+                if(data.success==false) {
+                    parent.layer.msg(data.msg);
+                    return;
+                }
+                parent.layer.msg("项目删除成功！");
+                $("#modal-formUser").modal('hide');
+                location.reload();
+            }
+        });
+    }
     $(function () {
         totalCount = parseInt($.trim($("#totalCount").val()));
         pageSize = parseInt($.trim($("#pageSize").val()));
@@ -90,9 +168,7 @@
             }
         });
     });
-    function editProject(projectId) {
 
-    }
 </script>
 </body>
 
