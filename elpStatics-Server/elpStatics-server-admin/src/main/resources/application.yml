@@ -90,11 +90,11 @@ quartz:
 # =======================basis.druid======================
 basis.druid:
   # 初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时
-  initialSize: 1
+  initialSize: 5
   # 最小连接池数量
-  minIdle: 1
+  minIdle: 5
   # 最大连接池数量
-  maxActive: 10
+  maxActive: 100
   # 配置获取连接等待超时的时间
   maxWait: 10000
   #  配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
@@ -128,9 +128,9 @@ basis.druid:
   #  防御sql注入的filter:wall
   filters: stat
   # 访问的用户名
-  loginUsername: cycan_elpstatics2020
+  loginUsername: root
   # 访问的密码
-  loginPassword: cycan_elpstatics@2020!123
+  loginPassword: abc@123
 
 
 # ====================MybatisPlus====================

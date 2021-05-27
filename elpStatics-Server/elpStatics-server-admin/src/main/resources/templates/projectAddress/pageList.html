@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<header>
+    <#include "/includes/header.html" />
+    <link href="${tx.getContextPath()}/css/plugins/dataTables/dataTables.bootstrap.css?v=1.1" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="${tx.getContextPath()}/css/plugins/webuploader/webuploader.css">
+</header>
+<body>
+<nav class="breadcrumb">
+    <div class="text-left float"></div>
+    <i class="Hui-iconfont">&#xe67f;</i>首页 <span class="c-gray en">&gt;</span>工作台
+
+    <span class="c-gray en">&gt;</span>地址管理
+
+
+    </nav>
+<div class="pd-20">
+    <div class="text-center">
+        <form action="${tx.getContextPath()}/projectAddress/pageList" method="post" id="form" class="form-inline">
+            <input type="hidden" value="${(pageList.total)!'0'}" name="totalCount" id="totalCount"/>
+            <input type="hidden" value="${(pageList.size)!'10'}" name="pageSize" id="pageSize"/>
+            <input type="hidden" value="${(dto.pageNo)!'1'}" name="pageNo" id="pageNo"/>
+            <input type="hidden" value="${(dto.projectId)!''}" name="projectId" id="projectId"/>
+            <input type="hidden" value="${(dto.projectName)!''}" name="projectName" id="projectName"/>
+            <label class="font-noraml">用户地址:</label>
+            <input type="text" class="input-sm form-control" name="userAddress" value="${(dto.userAddress)!''}" />
+            <button type="submit" class="btn btn-success" id="searchBtn">搜索</button>
+            <div class="text-right">
+                <a class="btn btn-success radius r mr-20 "  style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新">刷新</a>
+                <button type="button" class="btn btn-success" id="btnAdd" onclick="add()">手动添加</button>
+                <button type="button" class="btn btn-success" id="btnImport" onclick="importCVS()">文件导入</button>
+                <button type="button" class="btn btn-success" id="btnExport" onclick="downloadCVS()">导出数据CVS</button>
+                <button type="button" class="btn btn-success" id="btnDelete" onclick="deleteBatch()">删除</button>
+
+            </div>
+        </form>
+    </div>
+    <table class="table table-border table-bordered table-hover table-bg table-sort " style="margin: 20px;">
+        <tr class="text-c">
+            <th>id</th>
+            <th>导入时间</th>
+            <th>空头地址</th>
+            <th>导入来源</th>
+            <th>多选/<a href="javascript:void(0)" onclick="selectAllAddress()">全选</a>></th>
+            <th>操作</th>
+        </tr>
+        <#list pageList.records as item>
+        <tr>
+            <td>${item.id?c}</td>
+            <td>${(item.createTime?string("yyyy-MM-dd HH:mm:ss"))!}</td>
+            <td> ${item.userAdderss!'-'}</td>
+            <td> ${item.sourceType!'-'}</td>
+            <td><input type="checkbox" class="i-checks checkUserAddress" value="${(item.id)}" ></td>
+            <td>
+            <button type="button" class="btn btn-success"  onclick="deleteItem('${item.id}')" >删除</button>
+            </td>
+        </tr>
+    </#list>
+    </table>
+    <div class="page-wrapper" <#if (pageList.total)?? && (pageList.total) == 0>style="display: none;"</#if> >
+        <div class="page_con pagination" id="page"  > </div>
+        <div class="dataTables_info" id="editable_info" style="float: right;" >总共 ${(pageList.total)!'0'} 条</div>
+    </div>
+</div>
+<div id="modal-formAddress" class="modal fade" aria-hidden="true">
+    <div class="modal-dialog" style="width: 300px;">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row text-center">
+                    <h3 class="m-t-none m-b">添加空头地址</h3>
+                </div>
+                <div class="row">
+                    <form role="form" id="formAddress">
+                        <input type="hidden" value="${(dto.projectId)!''}" name="projectId" id="hProjectId"/>
+
+                        <div class="form-group">
+                            <label>空头地址：</label>
+                            <input type="text" id="pUserAdderss"  placeholder="请输入空头地址" class="form-control">
+                        </div>
+                        <div class="text-center">
+                            <button type="button" onclick="save()" class="btn btn-primary ">
+                                保存
+                            </button>
+                            <button type="button" class="btn btn-default " data-dismiss="modal">关闭
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-formUpload" class="modal fade" aria-hidden="true">
+    <div class="modal-dialog" style="width: 300px;">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row text-center">
+                    <h3 class="m-t-none m-b">文件导入</h3>
+                </div>
+                <div class="row">
+                    <form role="form" id="formUpload" action="/projectAddress/uploadAddress" enctype="multipart/form-data">
+                        <input type="hidden" value="${(dto.projectId)!''}" name="projectId" />
+                        <input type="hidden" value="${(dto.projectName)!''}" name="projectName" />
+                        <div class="form-group">
+                            <label>选择文件：</label>
+                            <input type="file" id="pFile"  accept=".csv" class="form-control">
+                        </div>
+                        <div class="text-center">
+                            <button type="button" onclick="uploadAddress()" class="btn btn-primary ">
+                                上传
+                            </button>
+                            <button type="button" class="btn btn-default " data-dismiss="modal">关闭
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<#include "/includes/footer.html" />
+<script src="${tx.getContextPath()}/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="${tx.getContextPath()}/js/pagination/page.js"></script>
+<script src="${tx.getContextPath()}/js/plugins/webuploader/webuploader.min.js"></script>
+<script type="text/javascript">
+    function importCVS() {
+        $("#pFile").val("");
+        $("#modal-formUpload").modal('show');
+    }
+    function downloadCVS(  ) {
+        var url="/projectAddress/downloadCVS?projectName="+$("#projectName").val()+"&&projectId="+$("#projectId").val()+"&&userAddress="+$("#userAddress").val();
+            window.open(url)
+    }
+    function uploadAddress() {
+        var url=$("#formUpload").attr("action");
+        var form = new FormData();
+        form.append("file", document.getElementById("pFile").files[0]);
+        form.append("projectId",$("#projectId").val())
+        $.ajax({
+            url : url,
+            type : 'POST',
+            cache : false,
+            async: false,
+            data : form,
+            processData : false,
+            contentType : false,
+            success : function(result) {
+                parent.layer.msg(result.msg);
+                $("#modal-formUpload").modal('hide');
+                location.reload();
+            }
+        });
+    }
+    function selectAllAddress() {
+        $(".checkUserAddress").attr("checked", true);
+    }
+    function add() {
+        $("#formAddress")[0].reset();
+        $("#modal-formAddress").modal('show');
+    }
+    function save() {
+        var projectData={userAdderss:$("#pUserAdderss").val(),projectId:$("#hProjectId").val()};
+        var url=basePath+"/projectAddress/add";
+        $.ajax({
+            type: 'POST',
+            url:url,
+            dataType:'json',
+            contentType:"application/json",
+            async: false,
+            data:JSON.stringify(projectData),
+            success:function(data){
+                if(data.success==false) {
+                    parent.layer.msg(data.msg);
+                    return;
+                }
+                parent.layer.msg("空头地址保存成功！");
+                $("#modal-formAddress").modal('hide');
+                location.reload();
+            }
+        });
+    }
+    function deleteItem(addressId) {
+        var arr=new Array();
+        arr.push(addressId);
+        var addressData={ids:arr};
+        var url=basePath+"/projectAddress/deleteBacth";
+        $.ajax({
+            type: 'POST',
+            url:url,
+            dataType:'json',
+            contentType:"application/json",
+            async: false,
+            data:JSON.stringify(arr),
+            success:function(data){
+                if(data.success==false) {
+                    parent.layer.msg(data.msg);
+                    return;
+
+                }
+                parent.layer.msg("删除地址成功！");
+                $("#modal-formUser").modal('hide');
+                location.reload();
+            }
+        });
+
+    }
+    function deleteBatch(){
+        var arr=new Array();
+        $.each($(".checkUserAddress:checked"),function(i){
+            arr.push($(this).val());
+        });
+
+        var url=basePath+"/projectAddress/deleteBacth";
+        $.ajax({
+            type: 'POST',
+            url:url,
+            dataType:'json',
+            contentType:"application/json",
+            async: false,
+            data: JSON.stringify(arr),
+            success:function(data){
+                if(data.success==false) {
+                    parent.layer.msg(data.msg);
+                    return;
+                }
+                parent.layer.msg("删除地址成功！");
+                $("#modal-formUser").modal('hide');
+                location.reload();
+            }
+        });
+    }
+    $(function () {
+        totalCount = parseInt($.trim($("#totalCount").val()));
+        pageSize = parseInt($.trim($("#pageSize").val()));
+        pageNo = parseInt($.trim($("#pageNo").val()));
+        $("#page").pagination({
+            totalCount: totalCount,
+            pageSize: pageSize,
+            currentPage: pageNo - 1,
+            seriesShowCount: 6,
+            bothSidesShowCount : 1,
+            clickEvent: function (page_index) {
+                $("#pageNo").val(page_index + 1);
+                $("#form").submit();
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

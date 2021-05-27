@@ -7,6 +7,8 @@ import network.cycan.elpStatics.model.entity.AirProjectAddress;
 import com.baomidou.mybatisplus.extension.service.IService;
 import network.cycan.elpStatics.model.entity.StsDailyContract;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -18,5 +20,8 @@ import network.cycan.elpStatics.model.entity.StsDailyContract;
 public interface IAirProjectAddressService extends IService<AirProjectAddress> {
 
       IPage<AirProjectAddress> pageByCondition(AirProjectAddressDto dto)  ;
+      List<String> selectAddressList(AirProjectAddressDto dto);
+      int  getAdderessCount(Long projectId,String userAdderss);
+      List<String> selectExistAddressList(Long projectId,List<String> addressList);
 
 }

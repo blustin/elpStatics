@@ -3,7 +3,9 @@ package network.cycan.elpStatics;
 
 import lombok.extern.slf4j.Slf4j;
 import network.cycan.core.util.UUIDUtils;
+import network.cycan.elpStatics.model.entity.AirProjectAddress;
 import network.cycan.elpStatics.model.entity.SysUser;
+import network.cycan.elpStatics.service.IAirProjectAddressService;
 import network.cycan.elpStatics.service.ISysUserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,5 +41,18 @@ public class TestEncoder {
         //iSysUserService.save(sysUser);
         System.out.println(enPassword);
     }
-
+    @Autowired
+    private IAirProjectAddressService projectAddressService;
+    @Test
+    public void  testPrjectAddress()
+    {
+        AirProjectAddress airProjectAddress = new AirProjectAddress();
+        airProjectAddress.setProjectId(6L);
+        airProjectAddress.setSourceType("文件导入");
+        airProjectAddress.setUserAdderss("testete");
+        airProjectAddress.setCreateTime(LocalDateTime.now());
+        airProjectAddress.setUpdateTime(LocalDateTime.now());
+        projectAddressService.getAdderessCount(6L,"testete");
+        projectAddressService.save(airProjectAddress);
+    }
 }
