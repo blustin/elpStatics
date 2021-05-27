@@ -18,12 +18,14 @@ public class HttpBlockChainUtil {
     public static final String APIKEY = "UVJIY1RQ348R5CJX9225SA8YIM95YMWA39";
 
     public static final String ELP_CONTRACT_ADDREES = "0xe3894cb9e92ca78524fb6a30ff072fa5e533c162";
-    public static final String ELP_TRANSFER_TOPIC0 = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+
 
     public static final String LP_TOKEN_ADDRESS = "0xdae876044756b51e83b8bcecf810be56cfad05b1";
-    public static final String LP_TOPIC0 = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+   public static final String LP_TOKEN_ADDRESS_V2 = "0x28fa12dc40df1c7bbc19ab2a8ea55799453082c1";
+
 
     public static final String MOVING_CONTRACT_ADDRESS = "0xe62bb7f26588628229b7f184c4eb84c2baff299d";
+
 
     public static  final BigDecimal RADIX_POINT=new BigDecimal(Math.pow(10,18));
 
